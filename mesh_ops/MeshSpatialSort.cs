@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using g3;
 
-namespace gs
+namespace g3
 {
     /// <summary>
     /// This class sorts a set of mesh components.

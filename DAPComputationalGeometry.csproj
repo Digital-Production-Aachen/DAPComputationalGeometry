@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyTitle>DAPComputationalGeometry</AssemblyTitle>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Authors>Sebastian Dirks</Authors>
+    <Company>Digital Additive Production DAP</Company>
+    <PackageProjectUrl>https://github.com/Digital-Production-Aachen/DAPComputationalGeometry</PackageProjectUrl>
+    <Copyright>Copyright ©DAP 2025</Copyright>
+    <Platforms>x64</Platforms>
+    <RootNamespace>g3</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Clipper2" Version="1.5.4.4" />
+    <PackageReference Include="Clipper2Z" Version="1.5.4.4" />
+    <PackageReference Include="OpenVectorFormat.OVFDefinition" Version="1.7.1" />
+  </ItemGroup>
+
+</Project>

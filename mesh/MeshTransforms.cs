@@ -118,19 +118,23 @@ namespace g3
         }
 
         /// <summary> Map mesh *from* local frame coordinates into "world" coordinates </summary>
-        public static void FromFrame(IDeformableMesh mesh, Frame3f f)
+        public static void FromFrame(IDeformableMesh mesh, Frame3f f) => FromFrame(mesh, f.ToFrame3d());     
+        public static void FromFrame(IDeformableMesh mesh, Frame3d f)
         {
             int NV = mesh.MaxVertexID;
             bool bHasNormals = mesh.HasVertexNormals;
-            for ( int vid = 0; vid < NV; ++vid ) {
-                if (mesh.IsVertex(vid)) {
+            for (int vid = 0; vid < NV; ++vid)
+            {
+                if (mesh.IsVertex(vid))
+                {
                     Vector3d vf = mesh.GetVertex(vid);
                     Vector3d v = f.FromFrameP(ref vf);
                     mesh.SetVertex(vid, v);
-                    if ( bHasNormals ) {
-                        Vector3f n = mesh.GetVertexNormal(vid);
-                        Vector3f nf = f.FromFrameV(ref n);
-                        mesh.SetVertexNormal(vid, nf);
+                    if (bHasNormals)
+                    {
+                        Vector3d n = mesh.GetVertexNormal(vid);
+                        Vector3d nf = f.FromFrameV(n);
+                        mesh.SetVertexNormal(vid, (Vector3f)nf);
                     }
                 }
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace g3
 {
@@ -224,26 +225,51 @@ namespace g3
             used_count = maxIndex;
         }
 
+        //    while (nIndex != nLast) {
+        //        yield return nIndex;
+
+        //        if (nIndex != nLast)
+        //            nIndex++;
+        //        while (nIndex != nLast && ref_counts[nIndex] <= 0)
+        //            nIndex++;
 
 
+        public IEnumerator<int> GetEnumerator() => new RefCountEnumerator(ref_counts, max_index);
+        IEnumerator IEnumerable.GetEnumerator() => new RefCountEnumerator(ref_counts, max_index);
 
-        public System.Collections.IEnumerator GetEnumerator()
+        private struct RefCountEnumerator : IEnumerator<int>
         {
-            int nIndex = 0;
-            int nLast = max_index;
+            readonly DVector<short> ref_counts;
+            readonly int nLast;
+            int nIndex;
 
-            // skip leading empties
-            while (nIndex != nLast && ref_counts[nIndex] <= 0)
-                nIndex++;
-
-            while (nIndex != nLast) {
-                yield return nIndex;
-
-                if (nIndex != nLast)
-                    nIndex++;
-                while (nIndex != nLast && ref_counts[nIndex] <= 0)
-                    nIndex++;
+            public RefCountEnumerator(DVector<short> ref_counts, int maxIndex)
+            {
+                this.ref_counts = ref_counts;
+                nLast = maxIndex;
+                nIndex = -1;
             }
+
+            public int Current => nIndex;
+            object IEnumerator.Current => nIndex;
+
+            public bool MoveNext()
+            {
+                int i = nIndex + 1;
+                while (i != nLast && ref_counts[i] <= 0)
+                    i++;
+                if (i == nLast)
+                    return false;
+                nIndex = i;
+                return true;
+            }
+
+            public void Reset()
+            {
+                nIndex = -1;
+            }
+
+            public void Dispose() { }
         }
 
 

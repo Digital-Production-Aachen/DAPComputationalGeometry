@@ -92,7 +92,7 @@ namespace g3
                 return numer/denom;
             } else {
                 // Curvature is indeterminate, just return 0.
-                return (double)0;
+                return 0;
             }
         }
 

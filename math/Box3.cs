@@ -57,7 +57,7 @@ namespace g3 {
         {
             Center = seg.Center;
             AxisZ = seg.Direction;
-            Vector3d.MakePerpVectors(ref AxisZ, out AxisX, out AxisY);
+            Vector3d.MakePerpVectors(AxisZ, out AxisX, out AxisY);
             Extent = new Vector3d(0, 0, seg.Extent);
         }
 
@@ -277,7 +277,7 @@ namespace g3 {
             Vector3d closest = new Vector3d();
             int i;
             for (i = 0; i < 3; ++i) {
-                closest[i] = Axis(i).Dot(ref v);
+                closest[i] = Axis(i).Dot(v);
                 if (closest[i] < -Extent[i]) {
                     delta = closest[i] + Extent[i];
                     sqrDistance += delta * delta;
@@ -308,7 +308,7 @@ namespace g3 {
             double delta;
             Vector3d closest = new Vector3d();
             for (int i = 0; i < 3; ++i) {
-                closest[i] = Axis(i).Dot(ref v);
+                closest[i] = Axis(i).Dot(v);
                 double extent = Extent[i];
                 if (closest[i] < -extent) {
                     delta = closest[i] + extent;
@@ -381,7 +381,7 @@ namespace g3 {
             for (i = 0; i < 8; ++i) {
                 Vector3d diff = vertex[i] - box.Center;
                 for (j = 0; j < 3; ++j) {
-                    dot = box.Axis(j).Dot(ref diff);
+                    dot = box.Axis(j).Dot(diff);
                     if (dot > pmax[j]) {
                         pmax[j] = dot;
                     } else if (dot < pmin[j]) {
@@ -394,7 +394,7 @@ namespace g3 {
             for (i = 0; i < 8; ++i) {
                 Vector3d diff = vertex[i] - box.Center;
                 for (j = 0; j < 3; ++j) {
-                    dot = box.Axis(j).Dot(ref diff);
+                    dot = box.Axis(j).Dot(diff);
                     if (dot > pmax[j]) {
                         pmax[j] = dot;
                     } else if (dot < pmin[j]) {

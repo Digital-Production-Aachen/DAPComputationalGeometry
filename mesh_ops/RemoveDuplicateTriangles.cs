@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using g3;
 
-namespace gs
+namespace g3
 {
 	/// <summary>
 	/// Remove duplicate triangles.

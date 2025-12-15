@@ -43,12 +43,12 @@ namespace g3
 
                 Vector3d v_along = Curve[ri];
                 Vector3f v_frame = f.ToFrameP((Vector3f)v_along);
-                float uv_along = (float)ri / (float)(nRings - 1);
+                float uv_along = ri / (float)(nRings - 1);
 
                 // generate vertices
                 int nStartR = ri * nRingSize;
                 for (int j = 0; j < nRingSize; ++j) {
-                    float angle = (float)j * fDelta;
+                    float angle = j * fDelta;
 
                     // [TODO] this is not efficient...use Matrix3f?
                     Vector3f v_rot = Quaternionf.AxisAngleR(Vector3f.AxisY, angle) * v_frame;
@@ -56,7 +56,7 @@ namespace g3
                     int k = nStartR + j;
                     vertices[k] = v_new;
 
-                    float uv_around = (float)j / (float)(nRingSize);
+                    float uv_around = j / (float)(nRingSize);
                     uv[k] = new Vector2f(uv_along, uv_around);
 
                     // [TODO] proper normal
@@ -91,8 +91,8 @@ namespace g3
                     vAvgStart += vertices[k];
                     vAvgEnd += vertices[(nRings - 1) * nRingSize + k];
                 }
-                vAvgStart /= (double)Slices;
-                vAvgEnd /= (double)Slices;
+                vAvgStart /= Slices;
+                vAvgEnd /= Slices;
 
                 Frame3f fStart = f;
                 fStart.Origin = (Vector3f)vAvgStart;
@@ -122,7 +122,7 @@ namespace g3
                         vertices[nStartB + k] = vertices[nExistingB + k];
                         //uv[nStartB + k] = (Vector2f)Polygon.Vertices[k].Normalized;
 
-                        float angle = (float)k * fDelta;
+                        float angle = k * fDelta;
                         double cosa = Math.Cos(angle), sina = Math.Sin(angle);
                         uv[nStartB + k] = new Vector2f(0.5f * (1.0f + cosa), 0.5f * (1 + sina));
 
@@ -137,7 +137,7 @@ namespace g3
                         vertices[nStartT + k] = vertices[nExistingT + k];
                         //uv[nStartT + k] = (Vector2f)Polygon.Vertices[k].Normalized;
 
-                        float angle = (float)k * fDelta;
+                        float angle = k * fDelta;
                         double cosa = Math.Cos(angle), sina = Math.Sin(angle);
                         uv[nStartT + k] = new Vector2f(0.5f * (1.0f + cosa), 0.5f * (1 + sina));
 
@@ -212,12 +212,12 @@ namespace g3
 
                 Vector3d v_along = Curve[ri];
                 Vector3f v_frame = fCur.ToFrameP((Vector3f)v_along);
-                float uv_along = (float)ri / (float)(nRings - 1);
+                float uv_along = ri / (float)(nRings - 1);
 
                 // generate vertices
                 int nStartR = ri * nRingSize;
                 for (int j = 0; j < nRingSize; ++j) {
-                    float angle = (float)j * fDelta;
+                    float angle = j * fDelta;
 
                     // [TODO] this is not efficient...use Matrix3f?
                     Vector3f v_rot = Quaternionf.AxisAngleR(Vector3f.AxisY, angle) * v_frame;
@@ -225,7 +225,7 @@ namespace g3
                     int k = nStartR + j;
                     vertices[k] = v_new;
 
-                    float uv_around = (float)j / (float)(nRingSize);
+                    float uv_around = j / (float)(nRingSize);
                     uv[k] = new Vector2f(uv_along, uv_around);
 
                     // [TODO] proper normal
@@ -260,8 +260,8 @@ namespace g3
                     vAvgStart += vertices[k];
                     vAvgEnd += vertices[(nRings - 1) * nRingSize + k];
                 }
-                vAvgStart /= (double)Slices;
-                vAvgEnd /= (double)Slices;
+                vAvgStart /= Slices;
+                vAvgEnd /= Slices;
 
                 Frame3f fStart = f0;
                 fStart.Origin = (Vector3f)vAvgStart;
@@ -291,7 +291,7 @@ namespace g3
                         vertices[nStartB + k] = vertices[nExistingB + k];
                         //uv[nStartB + k] = (Vector2f)Polygon.Vertices[k].Normalized;
 
-                        float angle = (float)k * fDelta;
+                        float angle = k * fDelta;
                         double cosa = Math.Cos(angle), sina = Math.Sin(angle);
                         uv[nStartB + k] = new Vector2f(0.5f * (1.0f + cosa), 0.5f * (1 + sina));
 
@@ -306,7 +306,7 @@ namespace g3
                         vertices[nStartT + k] = vertices[nExistingT + k];
                         //uv[nStartT + k] = (Vector2f)Polygon.Vertices[k].Normalized;
 
-                        float angle = (float)k * fDelta;
+                        float angle = k * fDelta;
                         double cosa = Math.Cos(angle), sina = Math.Sin(angle);
                         uv[nStartT + k] = new Vector2f(0.5f * (1.0f + cosa), 0.5f * (1 + sina));
 

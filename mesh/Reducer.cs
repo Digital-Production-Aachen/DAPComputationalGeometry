@@ -204,7 +204,7 @@ namespace g3
                         return;
 
                     mesh.GetEdgeV(eid, ref va, ref vb);
-                    if (va.DistanceSquared(ref vb) > min_sqr)
+                    if (va.DistanceSquared(vb) > min_sqr)
                         continue;
 
                     COUNT_ITERATIONS++;
@@ -790,7 +790,7 @@ skip_to_end:
 			bx = by = bz = c = 0;
 			Vector3d v = multiplyA(ref p);
 			bx = -v.x; by = -v.y; bz = -v.z;
-			c = p.Dot(ref v);
+			c = p.Dot(v);
 		}
 		public QuadricError(ref QuadricError a, ref QuadricError b) {
 			Axx = a.Axx + b.Axx;

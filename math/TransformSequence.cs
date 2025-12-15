@@ -285,9 +285,9 @@ namespace g3
 
         public void Store(BinaryWriter writer)
         {
-            writer.Write((int)1);      // version number
+            writer.Write(1);      // version number
 
-            writer.Write((int)Operations.Count);
+            writer.Write(Operations.Count);
             for ( int i = 0; i < Operations.Count; ++i ) {
                 writer.Write((int)Operations[i].type);
                 gSerialization.Store(Operations[i].data.V0, writer);

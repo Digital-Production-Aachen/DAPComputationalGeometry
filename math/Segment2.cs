@@ -38,6 +38,17 @@ namespace g3
             get { return 2 * Extent; }
         }
 
+        public AxisAlignedBox2d Bounds
+        {
+            get
+            {
+                AxisAlignedBox2d bounds = AxisAlignedBox2d.Empty;
+                bounds.Contain(P0);
+                bounds.Contain(P1);
+                return bounds;
+            }
+        }
+
 		public Vector2d Endpoint(int i) {
 			return (i == 0) ? (Center - Extent * Direction) : (Center + Extent * Direction);
 		}
@@ -217,7 +228,7 @@ namespace g3
             Vector2d diff = seg2.Center - Center;
             double D0DotPerpD1 = Direction.DotPerp(seg2.Direction);
             if (Math.Abs(D0DotPerpD1) > dotThresh) {   // Lines intersect in a single point.
-                double invD0DotPerpD1 = ((double)1) / D0DotPerpD1;
+                double invD0DotPerpD1 = 1 / D0DotPerpD1;
                 double diffDotPerpD0 = diff.DotPerp(Direction);
                 double diffDotPerpD1 = diff.DotPerp(seg2.Direction);
                 double s = diffDotPerpD1 * invD0DotPerpD1;
@@ -247,15 +258,7 @@ namespace g3
         public bool Intersects(Segment2d seg2, double dotThresh = double.Epsilon, double intervalThresh = 0) {
             return Intersects(ref seg2, dotThresh, intervalThresh);
         }
-
-
     }
-
-
-
-
-
-
 
     public struct Segment2f
     {

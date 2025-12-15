@@ -1,101 +1,167 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Globalization;
 
 namespace g3
 {
-	public class SVGWriter
-	{
-        public bool FlipY = true;
+    // layer support ported from SutroMachine/geometry3Sharp by @gregmeess
+    public class SVGWriter
+    {
+        public bool FlipY { get; set; } = true;
 
+        public bool NonScalingStroke { get; set; } = false;
 
-		public struct Style {
-			public string fill;
-			public string stroke;
-			public float stroke_width;
+        protected class Layer
+        {
+            public Layer(string name)
+            {
+                Name = name;
+                Objects = new List<object>();
+            }
 
-			public static readonly Style Default = new Style() { fill = "none", stroke = "black", stroke_width = 1 };
+            public string Name { get; set; }
+            public List<object> Objects { get; set; }
+        }
 
-			public static Style Filled(string fillCol, string strokeCol = "", float strokeWidth = 0) {
-				return new Style() { fill = fillCol, stroke = strokeCol, stroke_width = strokeWidth };
-			}
-			public static Style Outline(string strokeCol, float strokeWidth) {
-				return new Style() { fill = "none", stroke = strokeCol, stroke_width = strokeWidth };
-			}
+        public class Style
+        {
+            public string Fill { get; set; }
+            public string Stroke { get; set; }
+            public float Stroke_width { get; set; }
 
-			public override string ToString() {
-				StringBuilder b = new StringBuilder();
-				if (fill.Length > 0) { b.Append("fill:"); b.Append(fill); b.Append(';'); }
-				if (stroke.Length > 0) { b.Append("stroke:"); b.Append(stroke); b.Append(';'); }
-				if (stroke_width > 0) { b.Append("stroke-width:"); b.Append(stroke_width); b.Append(";"); }
-				return b.ToString();
-			}
-		}
+            public float FillOpacity { get; set; } = 1;
 
+            public static readonly Style Default = new Style() { Fill = "none", Stroke = "black", Stroke_width = 1 };
 
-		Dictionary<object, Style> Styles = new Dictionary<object, Style>();
+            public static Style Filled(string fillCol, string strokeCol = "", float strokeWidth = 0, float opacity = 1)
+            {
+                return new Style() { Fill = fillCol, FillOpacity = opacity, Stroke = strokeCol, Stroke_width = strokeWidth };
+            }
 
-		public Style DefaultPolygonStyle;
-		public Style DefaultPolylineStyle;
-        public Style DefaultDGraphStyle;
-        public Style DefaultCircleStyle;
-        public Style DefaultArcStyle;
-        public Style DefaultLineStyle;
+            public static Style Outline(string strokeCol, float strokeWidth)
+            {
+                return new Style() { Fill = "none", Stroke = strokeCol, Stroke_width = strokeWidth };
+            }
 
+            public override string ToString()
+            {
+                StringBuilder b = new StringBuilder();
 
-        List<object> Objects;
+                if (Fill.Length > 0)
+                {
+                    b.Append("fill:");
+                    b.Append(Fill);
+                    b.Append(';');
+                }
 
+                if (FillOpacity < 1f)
+                {
+                    b.Append("fill-opacity:");
+                    b.Append(FillOpacity);
+                    b.Append(';');
+                }
 
-		AxisAlignedBox2d Bounds;
+                if (Stroke.Length > 0)
+                {
+                    b.Append("stroke:");
+                    b.Append(Stroke);
+                    b.Append(';');
+                }
 
-		public int Precision = 3;
-		public double BoundsPad = 10;
+                if (Stroke_width > 0)
+                {
+                    b.Append("stroke-width:");
+                    b.Append(Stroke_width);
+                    b.Append(";");
+                }
 
+                return b.ToString();
+            }
+        }
 
-		public SVGWriter()
-		{
-			Objects = new List<object>();
-			Bounds = AxisAlignedBox2d.Empty;
+        protected Dictionary<object, Style> Styles = new Dictionary<object, Style>();
 
-			DefaultPolygonStyle = Style.Outline("grey", 1);
-			DefaultPolylineStyle = Style.Outline("cyan", 1);
-			DefaultCircleStyle = Style.Filled("green", "black", 1);
+        public Style DefaultPolygonStyle { get; set; }
+        public Style DefaultPolylineStyle { get; set; }
+        public Style DefaultDGraphStyle { get; set; }
+        public Style DefaultCircleStyle { get; set; }
+        public Style DefaultArcStyle { get; set; }
+        public Style DefaultLineStyle { get; set; }
+
+        protected List<Layer> Layers;
+        protected Layer CurrentLayer;
+
+        protected AxisAlignedBox2d Bounds;
+
+        public int Precision { get; set; } = 3;
+        public double BoundsPad { get; set; } = 10;
+
+        public SVGWriter()
+        {
+            CurrentLayer = new Layer("default");
+            Layers = new List<Layer>() { CurrentLayer };
+
+            Bounds = AxisAlignedBox2d.Empty;
+
+            DefaultPolygonStyle = Style.Outline("grey", 1);
+            DefaultPolylineStyle = Style.Outline("cyan", 1);
+            DefaultCircleStyle = Style.Filled("green", "black", 1);
             DefaultArcStyle = Style.Outline("magenta", 1);
             DefaultLineStyle = Style.Outline("black", 1);
             DefaultDGraphStyle = Style.Outline("blue", 1);
         }
 
-
-        public void SetDefaultLineWidth(float width)
+        public virtual void SetDefaultLineWidth(float width)
         {
-            DefaultPolygonStyle.stroke_width = width;
-            DefaultPolylineStyle.stroke_width = width;
-            DefaultCircleStyle.stroke_width = width;
-            DefaultArcStyle.stroke_width = width;
-            DefaultLineStyle.stroke_width = width;
-            DefaultDGraphStyle.stroke_width = width;
+            DefaultPolygonStyle.Stroke_width = width;
+            DefaultPolylineStyle.Stroke_width = width;
+            DefaultCircleStyle.Stroke_width = width;
+            DefaultArcStyle.Stroke_width = width;
+            DefaultLineStyle.Stroke_width = width;
+            DefaultDGraphStyle.Stroke_width = width;
         }
 
+        public virtual void StartNewLayer(string name)
+        {
+            CurrentLayer = new Layer(name);
+            Layers.Add(CurrentLayer);
+        }
 
+        public virtual void AddPolygon(Polygon2d poly)
+        {
+            CurrentLayer.Objects.Add(poly);
+            Bounds.Contain(poly.Bounds);
+        }
 
-		public void AddPolygon(Polygon2d poly) {
-			Objects.Add(poly);
-			Bounds.Contain(poly.Bounds);
-		}
-		public void AddPolygon(Polygon2d poly, Style style) {
-			Objects.Add(poly);
-			Styles[poly] = style;
-			Bounds.Contain(poly.Bounds);
-		}
+        public virtual void AddPolygon(Polygon2d poly, Style style)
+        {
+            CurrentLayer.Objects.Add(poly);
+            Styles[poly] = style;
+            Bounds.Contain(poly.Bounds);
+        }
 
+        public virtual void AddPolygon(GeneralPolygon2d poly)
+        {
+            CurrentLayer.Objects.Add(poly);
+            Bounds.Contain(poly.Bounds);
+        }
 
-        public void AddBox(AxisAlignedBox2d box) {
+        public virtual void AddPolygon(GeneralPolygon2d poly, Style style)
+        {
+            CurrentLayer.Objects.Add(poly);
+            Styles[poly] = style;
+            Bounds.Contain(poly.Bounds);
+        }
+
+        public virtual void AddBox(AxisAlignedBox2d box)
+        {
             AddBox(box, DefaultPolygonStyle);
         }
-        public void AddBox(AxisAlignedBox2d box, Style style)
+
+        public virtual void AddBox(AxisAlignedBox2d box, Style style)
         {
             Polygon2d poly = new Polygon2d();
             for (int k = 0; k < 4; ++k)
@@ -103,137 +169,180 @@ namespace g3
             AddPolygon(poly, style);
         }
 
-
-
-		public void AddPolyline(PolyLine2d poly) {
-			Objects.Add(poly);
-			Bounds.Contain(poly.Bounds);
-		}
-		public void AddPolyline(PolyLine2d poly, Style style) {
-			Objects.Add(poly);
-			Styles[poly] = style;
-			Bounds.Contain(poly.Bounds);
-		}
-
-
-        public void AddGraph(DGraph2 graph)
+        public virtual void AddPolyline(PolyLine2d poly)
         {
-            Objects.Add(graph);
+            CurrentLayer.Objects.Add(poly);
+            Bounds.Contain(poly.Bounds);
+        }
+
+        public virtual void AddPolyline(PolyLine2d poly, Style style)
+        {
+            CurrentLayer.Objects.Add(poly);
+            Styles[poly] = style;
+            Bounds.Contain(poly.Bounds);
+        }
+
+        public virtual void AddGraph(DGraph2 graph)
+        {
+            CurrentLayer.Objects.Add(graph);
             Bounds.Contain(graph.GetBounds());
         }
-        public void AddGraph(DGraph2 graph, Style style)
+
+        public virtual void AddGraph(DGraph2 graph, Style style)
         {
-            Objects.Add(graph);
+            CurrentLayer.Objects.Add(graph);
             Styles[graph] = style;
             Bounds.Contain(graph.GetBounds());
         }
 
-
-        public void AddCircle(Circle2d circle) {
-			Objects.Add(circle);
-			Bounds.Contain(circle.Bounds);
-		}
-		public void AddCircle(Circle2d circle, Style style) {
-			Objects.Add(circle);
-			Styles[circle] = style;
-			Bounds.Contain(circle.Bounds);
-		}
-
-
-        public void AddArc(Arc2d arc)
+        public virtual void AddCircle(Circle2d circle)
         {
-            Objects.Add(arc);
+            CurrentLayer.Objects.Add(circle);
+            Bounds.Contain(circle.Bounds);
+        }
+
+        public virtual void AddCircle(Circle2d circle, Style style)
+        {
+            CurrentLayer.Objects.Add(circle);
+            Styles[circle] = style;
+            Bounds.Contain(circle.Bounds);
+        }
+
+        public virtual void AddArc(Arc2d arc)
+        {
+            CurrentLayer.Objects.Add(arc);
             Bounds.Contain(arc.Bounds);
         }
-        public void AddArc(Arc2d arc, Style style)
+
+        public virtual void AddArc(Arc2d arc, Style style)
         {
-            Objects.Add(arc);
+            CurrentLayer.Objects.Add(arc);
             Styles[arc] = style;
             Bounds.Contain(arc.Bounds);
         }
 
-
-        public void AddLine(Segment2d segment) {
-			Objects.Add(new Segment2dBox(segment));
-			Bounds.Contain(segment.P0); Bounds.Contain(segment.P1);
-		}
-		public void AddLine(Segment2d segment, Style style) {
-			Segment2dBox segbox = new Segment2dBox(segment);
-			Objects.Add(segbox);
-			Styles[segbox] = style;
-			Bounds.Contain(segment.P0); Bounds.Contain(segment.P1);
-		}
-
-
-        public void AddComplex(PlanarComplex complex)
+        public virtual void AddLine(Segment2d segment)
         {
-            Objects.Add(complex);
+            CurrentLayer.Objects.Add(new Segment2dBox(segment));
+            Bounds.Contain(segment.P0); Bounds.Contain(segment.P1);
+        }
+
+        public virtual void AddLine(Segment2d segment, Style style)
+        {
+            Segment2dBox segbox = new Segment2dBox(segment);
+            CurrentLayer.Objects.Add(segbox);
+            Styles[segbox] = style;
+            Bounds.Contain(segment.P0); Bounds.Contain(segment.P1);
+        }
+
+        public virtual void AddComplex(PlanarComplex complex)
+        {
+            CurrentLayer.Objects.Add(complex);
             Bounds.Contain(complex.Bounds());
         }
 
-
-
-		public IOWriteResult Write(string sFilename) {
+        public virtual IOWriteResult Write(string sFilename)
+        {
             var current_culture = Thread.CurrentThread.CurrentCulture;
 
-            try {
+            try
+            {
                 // push invariant culture for write
                 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
-                using (StreamWriter w = new StreamWriter(sFilename)) {
+                using (StreamWriter w = new StreamWriter(sFilename))
+                {
                     if (w.BaseStream == null)
                         return new IOWriteResult(IOCode.FileAccessError, "Could not open file " + sFilename + " for writing");
 
-
                     write_header_1_1(w);
 
-                    foreach (var o in Objects) {
-                        if (o is Polygon2d)
-                            write_polygon(o as Polygon2d, w);
-                        else if (o is PolyLine2d)
-                            write_polyline(o as PolyLine2d, w);
-                        else if (o is Circle2d)
-                            write_circle(o as Circle2d, w);
-                        else if (o is Arc2d)
-                            write_arc(o as Arc2d, w);
-                        else if (o is Segment2dBox)
-                            write_line(o as Segment2dBox, w);
-                        else if (o is DGraph2)
-                            write_graph(o as DGraph2, w);
-                        else if (o is PlanarComplex)
-                            write_complex(o as PlanarComplex, w);
-                        else
-                            throw new Exception("SVGWriter.Write: unknown object type " + o.GetType().ToString());
+                    foreach (var layer in Layers)
+                    {
+                        if (layer.Objects.Count == 0)
+                            continue;
+
+                        OpenGroup(layer.Name, w);
+                        WriteObjects(layer.Objects, w);
+                        CloseGroup(w);
                     }
-
-
                     w.WriteLine("</svg>");
                 }
 
                 // restore culture
                 Thread.CurrentThread.CurrentCulture = current_culture;
                 return IOWriteResult.Ok;
-
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Thread.CurrentThread.CurrentCulture = current_culture;
                 return new IOWriteResult(IOCode.WriterError, "Unknown error : exception : " + e.Message);
             }
-		}
+        }
 
+        protected virtual void CloseGroup(StreamWriter w)
+        {
+            w.WriteLine("</g>");
+        }
 
+        protected virtual void OpenGroup(string name, StreamWriter w)
+        {
+            w.WriteLine($"<g id=\"{name}\">");
+        }
 
+        protected virtual void WriteObjects(List<object> objects, StreamWriter w)
+        {
+            foreach (var o in objects)
+            {
+                switch (o)
+                {
+                    case Polygon2d polygon:
+                        write_polygon(polygon, w);
+                        break;
 
+                    case GeneralPolygon2d gpolygon:
+                        write_general_polygon(gpolygon, w);
+                        break;
 
+                    case PolyLine2d polyline:
+                        write_polyline(polyline, w);
+                        break;
 
+                    case Circle2d circle:
+                        write_circle(circle, w);
+                        break;
+
+                    case Arc2d arc:
+                        write_arc(arc, w);
+                        break;
+
+                    case Segment2dBox segmentBox:
+                        write_line(segmentBox, w);
+                        break;
+
+                    case DGraph2 graph:
+                        write_graph(graph, w);
+                        break;
+
+                    case PlanarComplex complex:
+                        write_complex(complex, w);
+                        break;
+
+                    default:
+                        throw new NotSupportedException("SVGWriter.Write: unknown object type " + o.GetType().ToString());
+                }
+            }
+        }
 
         public static void QuickWrite(List<GeneralPolygon2d> polygons, string sPath, double line_width = 1)
         {
             SVGWriter writer = new SVGWriter();
-            Style outer_cw = SVGWriter.Style.Outline("black", 2*(float)line_width);
+            Style outer_cw = SVGWriter.Style.Outline("black", 2 * (float)line_width);
             Style outer_ccw = SVGWriter.Style.Outline("green", 2 * (float)line_width);
             Style inner = SVGWriter.Style.Outline("red", (float)line_width);
-            foreach (GeneralPolygon2d poly in polygons) {
-                if ( poly.Outer.IsClockwise )
+            foreach (GeneralPolygon2d poly in polygons)
+            {
+                if (poly.Outer.IsClockwise)
                     writer.AddPolygon(poly.Outer, outer_cw);
                 else
                     writer.AddPolygon(poly.Outer, outer_ccw);
@@ -242,7 +351,6 @@ namespace g3
             }
             writer.Write(sPath);
         }
-
 
         public static void QuickWrite(DGraph2 graph, string sPath, double line_width = 1)
         {
@@ -253,112 +361,122 @@ namespace g3
         }
 
         public static void QuickWrite(List<GeneralPolygon2d> polygons1, string color1, float width1,
-		                              List<GeneralPolygon2d> polygons2, string color2, float width2,
-		                              string sPath)
-		{
-			SVGWriter writer = new SVGWriter();
-			Style style1 = SVGWriter.Style.Outline(color1, width1);
-			Style style1_holes = SVGWriter.Style.Outline(color1, width1/2);
-			foreach (GeneralPolygon2d poly in polygons1) {
-				writer.AddPolygon(poly.Outer, style1);
-				foreach (var hole in poly.Holes)
-					writer.AddPolygon(hole, style1_holes);
-			}
-			Style style2 = SVGWriter.Style.Outline(color2, width2);
-			Style style2_holes = SVGWriter.Style.Outline(color2, width2 / 2);
-			foreach (GeneralPolygon2d poly in polygons2) {
-				writer.AddPolygon(poly.Outer, style2);
-				foreach (var hole in poly.Holes)
-					writer.AddPolygon(hole, style2_holes);
-			}
-			writer.Write(sPath);
-		}
-
-
-
-
-
-
-
+                                      List<GeneralPolygon2d> polygons2, string color2, float width2,
+                                      string sPath)
+        {
+            SVGWriter writer = new SVGWriter();
+            Style style1 = SVGWriter.Style.Outline(color1, width1);
+            Style style1_holes = SVGWriter.Style.Outline(color1, width1 / 2);
+            foreach (GeneralPolygon2d poly in polygons1)
+            {
+                writer.AddPolygon(poly.Outer, style1);
+                foreach (var hole in poly.Holes)
+                    writer.AddPolygon(hole, style1_holes);
+            }
+            Style style2 = SVGWriter.Style.Outline(color2, width2);
+            Style style2_holes = SVGWriter.Style.Outline(color2, width2 / 2);
+            foreach (GeneralPolygon2d poly in polygons2)
+            {
+                writer.AddPolygon(poly.Outer, style2);
+                foreach (var hole in poly.Holes)
+                    writer.AddPolygon(hole, style2_holes);
+            }
+            writer.Write(sPath);
+        }
 
         protected virtual Vector2d MapPt(Vector2d v)
         {
-            if (FlipY) {
+            if (FlipY)
+            {
                 return new Vector2d(v.x, Bounds.Min.y + (Bounds.Max.y - v.y));
-            } else
+            }
+            else
                 return v;
         }
 
+        protected virtual void write_header_1_1(StreamWriter w)
+        {
+            StringBuilder b = new StringBuilder();
 
+            b.Append("<svg ");
+            b.Append("version=\"1.1\" ");
+            b.Append("xmlns=\"http://www.w3.org/2000/svg\" ");
+            b.Append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" ");
+            b.Append("x=\"0px\" y=\"0px\" ");
+            b.Append(string.Format("viewBox=\"{0} {1} {2} {3}\" ",
+                                   Math.Round(Bounds.Min.x - BoundsPad, Precision),
+                                   Math.Round(Bounds.Min.y - BoundsPad, Precision),
+                                   Math.Round(Bounds.Width + 2 * BoundsPad, Precision),
+                                   Math.Round(Bounds.Height + 2 * BoundsPad, Precision)));
+            b.Append('>');
 
-		void write_header_1_1(StreamWriter w) {
-			StringBuilder b = new StringBuilder();
+            w.WriteLine(b);
+        }
 
-			b.Append("<svg ");
-			b.Append("version=\"1.1\" " );
-			b.Append("xmlns=\"http://www.w3.org/2000/svg\" ");
-			b.Append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" ");
-			b.Append("x=\"0px\" y=\"0px\" ");
-			b.Append(string.Format("viewBox=\"{0} {1} {2} {3}\" ",
-			                       Math.Round(Bounds.Min.x-BoundsPad,Precision),
-			                       Math.Round(Bounds.Min.y-BoundsPad,Precision),
-			                       Math.Round(Bounds.Width+2*BoundsPad,Precision),
-			                       Math.Round(Bounds.Height+2*BoundsPad,Precision)));
-			b.Append('>');
-
-			w.WriteLine(b);
-		}
-
-
-
-		void write_polygon(Polygon2d poly, StreamWriter w) 
-		{
-			StringBuilder b = new StringBuilder();
-			b.Append("<polygon points=\"");
-			for (int i = 0; i < poly.VertexCount; ++i ) {
-                Vector2d v = MapPt(poly[i]);
-				b.Append(Math.Round(v.x,Precision)); 
-				b.Append(','); 
-				b.Append(Math.Round(v.y, Precision));
-				if (i < poly.VertexCount - 1)
-					b.Append(' ');
-			}
-			b.Append("\" ");
-			append_style(b, poly, ref DefaultPolygonStyle);
-			b.Append(" />");
-
-			w.WriteLine(b);
-		}
-
-
-
-		void write_polyline(PolyLine2d poly, StreamWriter w)
-		{
-			StringBuilder b = new StringBuilder();
-			b.Append("<polyline points=\"");
-			for (int i = 0; i < poly.VertexCount; ++i) {
+        protected virtual void write_polygon(Polygon2d poly, StreamWriter w)
+        {
+            StringBuilder b = new StringBuilder();
+            b.Append("<polygon points=\"");
+            for (int i = 0; i < poly.VertexCount; ++i)
+            {
                 Vector2d v = MapPt(poly[i]);
                 b.Append(Math.Round(v.x, Precision));
-				b.Append(',');
-				b.Append(Math.Round(v.y, Precision));
-				if (i < poly.VertexCount - 1)
-					b.Append(' ');
-			}
-			b.Append("\" ");
-			append_style(b, poly, ref DefaultPolylineStyle);
-			b.Append(" />");
+                b.Append(',');
+                b.Append(Math.Round(v.y, Precision));
+                if (i < poly.VertexCount - 1)
+                    b.Append(' ');
+            }
+            b.Append("\" ");
+            append_style(b, poly, DefaultPolygonStyle);
+            b.Append(" />");
 
-			w.WriteLine(b);
-		}
+            w.WriteLine(b);
+        }
 
-
-
-        void write_graph(DGraph2 graph, StreamWriter w)
+        protected virtual void write_general_polygon(GeneralPolygon2d poly, StreamWriter w)
         {
-            string style = get_style(graph, ref DefaultDGraphStyle);
+            StringBuilder b = new StringBuilder();
+            b.Append("<path d=\"");
+            AppendPath(b, poly.Outer);
+            foreach (var hole in poly.Holes)
+            {
+                AppendPath(b, hole);
+            }
+
+            b.Append("\" ");
+            append_style(b, poly, DefaultPolygonStyle);
+            b.Append(" />");
+
+            w.WriteLine(b);
+        }
+
+        protected virtual void write_polyline(PolyLine2d poly, StreamWriter w)
+        {
+            StringBuilder b = new StringBuilder();
+            b.Append("<polyline points=\"");
+            for (int i = 0; i < poly.VertexCount; ++i)
+            {
+                Vector2d v = MapPt(poly[i]);
+                b.Append(Math.Round(v.x, Precision));
+                b.Append(',');
+                b.Append(Math.Round(v.y, Precision));
+                if (i < poly.VertexCount - 1)
+                    b.Append(' ');
+            }
+            b.Append("\" ");
+            append_style(b, poly, DefaultPolylineStyle);
+            b.Append(" />");
+
+            w.WriteLine(b);
+        }
+
+        protected virtual void write_graph(DGraph2 graph, StreamWriter w)
+        {
+            string style = get_style(graph, DefaultDGraphStyle);
 
             StringBuilder b = new StringBuilder();
-            foreach ( int eid in graph.EdgeIndices()) {
+            foreach (int eid in graph.EdgeIndices())
+            {
                 Segment2d seg = graph.GetEdgeSegment(eid);
                 b.Append("<line ");
                 Vector2d p0 = MapPt(seg.P0), p1 = MapPt(seg.P1);
@@ -373,22 +491,20 @@ namespace g3
             w.WriteLine(b);
         }
 
-
-        void write_circle(Circle2d circle, StreamWriter w)
-		{
-			StringBuilder b = new StringBuilder();
-			b.Append("<circle ");
+        protected virtual void write_circle(Circle2d circle, StreamWriter w)
+        {
+            StringBuilder b = new StringBuilder();
+            b.Append("<circle ");
             Vector2d c = MapPt(circle.Center);
             append_property("cx", c.x, b, true);
-			append_property("cy", c.y, b, true);
-			append_property("r", circle.Radius, b, true);
-			append_style(b, circle, ref DefaultCircleStyle);
-			b.Append(" />");
-			w.WriteLine(b);
-		}
+            append_property("cy", c.y, b, true);
+            append_property("r", circle.Radius, b, true);
+            append_style(b, circle, DefaultCircleStyle);
+            b.Append(" />");
+            w.WriteLine(b);
+        }
 
-
-        void write_arc(Arc2d arc, StreamWriter w)
+        protected virtual void write_arc(Arc2d arc, StreamWriter w)
         {
             StringBuilder b = new StringBuilder();
             Vector2d vStart = MapPt(arc.P0);
@@ -427,37 +543,34 @@ namespace g3
 
             b.Append("\" ");     // close path
 
-            append_style(b, arc, ref DefaultArcStyle);
-
+            append_style(b, arc, DefaultArcStyle);
 
             b.Append(" />");
             w.WriteLine(b);
         }
 
-
-        void write_line(Segment2dBox segbox, StreamWriter w)
-		{
-			Segment2d seg = (Segment2d)segbox;
-			StringBuilder b = new StringBuilder();
-			b.Append("<line ");
-			Vector2d p0 = MapPt(seg.P0), p1 = MapPt(seg.P1);
-			append_property("x1", p0.x, b, true);
-			append_property("y1", p0.y, b, true);
-			append_property("x2", p1.x, b, true);
-			append_property("y2", p1.y, b, true);
-			append_style(b, segbox, ref DefaultLineStyle);
-			b.Append(" />");
-			w.WriteLine(b);
-		}
-
-
-
-
-        void write_complex(PlanarComplex complex, StreamWriter w)
+        protected virtual void write_line(Segment2dBox segbox, StreamWriter w)
         {
-            foreach ( var elem in complex.ElementsItr() ) {
+            Segment2d seg = (Segment2d)segbox;
+            StringBuilder b = new StringBuilder();
+            b.Append("<line ");
+            Vector2d p0 = MapPt(seg.P0), p1 = MapPt(seg.P1);
+            append_property("x1", p0.x, b, true);
+            append_property("y1", p0.y, b, true);
+            append_property("x2", p1.x, b, true);
+            append_property("y2", p1.y, b, true);
+            append_style(b, segbox, DefaultLineStyle);
+            b.Append(" />");
+            w.WriteLine(b);
+        }
+
+        protected virtual void write_complex(PlanarComplex complex, StreamWriter w)
+        {
+            foreach (var elem in complex.ElementsItr())
+            {
                 List<IParametricCurve2d> curves = CurveUtils2.Flatten(elem.source);
-                foreach ( IParametricCurve2d c in curves ) {
+                foreach (IParametricCurve2d c in curves)
+                {
                     if (c is Segment2d)
                         write_line(new Segment2dBox((Segment2d)c), w);
                     else if (c is Circle2d)
@@ -472,33 +585,46 @@ namespace g3
             }
         }
 
+        protected virtual void append_property(string name, double val, StringBuilder b, bool trailSpace = true)
+        {
+            b.Append(name); b.Append("=\"");
+            b.Append(Math.Round(val, Precision));
+            if (trailSpace)
+                b.Append("\" ");
+            else
+                b.Append("\"");
+        }
 
-		void append_property(string name, double val, StringBuilder b, bool trailSpace = true) {
-			b.Append(name); b.Append("=\"");
-			b.Append(Math.Round(val, Precision));
-			if ( trailSpace )
-				b.Append("\" ");
-			else
-				b.Append("\"");
-		}
-
-
-		void append_style(StringBuilder b, object o, ref Style defaultStyle) {
-			Style style;
-			if (Styles.TryGetValue(o, out style) == false)
-				style = defaultStyle;
-			b.Append("style=\"");
-			b.Append(style.ToString());
-			b.Append("\"");			
-		}
-        string get_style(object o, ref Style defaultStyle) {
+        protected virtual void append_style(StringBuilder b, object o, Style defaultStyle)
+        {
             Style style;
-            if (Styles.TryGetValue(o, out style) == false)
+            if (!Styles.TryGetValue(o, out style))
+                style = defaultStyle;
+            b.Append("style=\"");
+            b.Append(style.ToString());
+            b.Append("\"");
+        }
+
+        protected virtual void AppendPath(StringBuilder b, Polygon2d poly)
+        {
+            b.Append("M ");
+            for (int i = 0; i < poly.VertexCount; ++i)
+            {
+                Vector2d v = MapPt(poly[i]);
+                b.Append(Math.Round(v.x, Precision));
+                b.Append(',');
+                b.Append(Math.Round(v.y, Precision));
+                b.Append(' ');
+            }
+            b.Append("z");
+        }
+
+        protected virtual string get_style(object o, Style defaultStyle)
+        {
+            Style style;
+            if (!Styles.TryGetValue(o, out style))
                 style = defaultStyle;
             return "style=\"" + style.ToString() + "\"";
         }
-
-
-
     }
 }

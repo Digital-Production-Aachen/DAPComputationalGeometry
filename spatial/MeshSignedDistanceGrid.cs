@@ -197,9 +197,9 @@ namespace g3
         }
         Vector3f cell_center(Vector3i ijk)
         {
-            return new Vector3f((float)ijk.x * CellSize + grid_origin[0],
-                                (float)ijk.y * CellSize + grid_origin[1],
-                                (float)ijk.z * CellSize + grid_origin[2]);
+            return new Vector3f(ijk.x * CellSize + grid_origin[0],
+                                ijk.y * CellSize + grid_origin[1],
+                                ijk.z * CellSize + grid_origin[2]);
         }
 
         float upper_bound(DenseGrid3f grid)
@@ -262,7 +262,7 @@ namespace g3
                 for (int k = k0; k <= k1; ++k) {
                     for (int j = j0; j <= j1; ++j) {
                         for (int i = i0; i <= i1; ++i) {
-                            Vector3d gx = new Vector3d((float)i * dx + origin[0], (float)j * dx + origin[1], (float)k * dx + origin[2]);
+                            Vector3d gx = new Vector3d(i * dx + origin[0], j * dx + origin[1], k * dx + origin[2]);
                             float d = (float)point_triangle_distance(ref gx, ref xp, ref xq, ref xr);
                             if (d < distances[i, j, k]) {
                                 distances[i, j, k] = d;
@@ -380,7 +380,7 @@ namespace g3
                         int base_idx = ((j < wj) ? 0 : 1) | ((k < wk) ? 0 : 2);    // construct index into spinlocks array
 
                         for (int i = i0; i <= i1; ++i) {
-                            Vector3d gx = new Vector3d((float)i * dx + origin[0], (float)j * dx + origin[1], (float)k * dx + origin[2]);
+                            Vector3d gx = new Vector3d(i * dx + origin[0], j * dx + origin[1], k * dx + origin[2]);
                             float d = (float)point_triangle_distance(ref gx, ref xp, ref xq, ref xr);
                             if (d < distances[i, j, k]) {
                                 int lock_idx = base_idx | ((i < wi) ? 0 : 4);
@@ -514,7 +514,7 @@ namespace g3
             gParallel.ForEach(grid.Indices(), (idx) => {
                 if ( distances[idx] == 1 ) {
                     int i = idx.x, j = idx.y, k = idx.z;
-                    Vector3d p = new Vector3d((float)i * dx + origin[0], (float)j * dx + origin[1], (float)k * dx + origin[2]);
+                    Vector3d p = new Vector3d(i * dx + origin[0], j * dx + origin[1], k * dx + origin[2]);
                     int near_tid = Spatial.FindNearestTriangle(p, max_dist);
                     if ( near_tid == DMesh3.InvalidID ) {
                         distances[idx] = upper_bound;
@@ -847,7 +847,7 @@ namespace g3
 
                 bool neg_x = false;
                 if (InsideMode == InsideModes.ParityCount) {
-                    Vector3d n = MathUtil.FastNormalDirection(ref xp, ref xq, ref xr);
+                    Vector3d n = MathUtil.FastNormalDirection(xp, xq, xr);
                     neg_x = n.x > 0;
                 }
 
@@ -1016,9 +1016,9 @@ namespace g3
             Vector3d x13 = (x1 - x3);
             Vector3d x23 = (x2 - x3);
             Vector3d x03 = (x0 - x3);
-            double m13 = x13.LengthSquared, m23 = x23.LengthSquared, d = x13.Dot(ref x23);
+            double m13 = x13.LengthSquared, m23 = x23.LengthSquared, d = x13.Dot(x23);
             double invdet = 1.0 / Math.Max(m13 * m23 - d * d, 1e-30);
-            double a = x13.Dot(ref x03), b = x23.Dot(ref x03);
+            double a = x13.Dot(x03), b = x23.Dot(x03);
             // the barycentric coordinates themselves
             double w23 = invdet * (m23 * a - d * b);
             double w31 = invdet * (m13 * b - d * a);

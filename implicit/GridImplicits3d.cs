@@ -64,9 +64,9 @@ namespace g3
                 return Outside;
 
             // convert double coords to [0,1] range
-            double fAx = gridPt.x - (double)x0;
-            double fAy = gridPt.y - (double)y0;
-            double fAz = gridPt.z - (double)z0;
+            double fAx = gridPt.x - x0;
+            double fAy = gridPt.y - y0;
+            double fAz = gridPt.z - z0;
             double OneMinusfAx = 1.0 - fAx;
 
             // compute trilinear interpolant. The code below tries to do this with the fewest 
@@ -128,9 +128,9 @@ namespace g3
             int z0 = (int)gridPt.z, z1 = z0 + 1;
 
             // convert double coords to [0,1] range
-            double fAx = gridPt.x - (double)x0;
-            double fAy = gridPt.y - (double)y0;
-            double fAz = gridPt.z - (double)z0;
+            double fAx = gridPt.x - x0;
+            double fAy = gridPt.y - y0;
+            double fAz = gridPt.z - z0;
 
             double fV000, fV100;
             Grid.get_x_pair(x0, y0, z0, out fV000, out fV100);

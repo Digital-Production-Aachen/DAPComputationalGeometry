@@ -93,12 +93,12 @@ namespace g3
                 maxIndex = 5;
             }
 
-            double invMaxValue = ((double)1) / maxValue;
+            double invMaxValue = 1 / maxValue;
             for (int i = 0; i < 6; ++i) {
                 if (i != maxIndex) {
                     coeff[i] *= invMaxValue;
                 } else {
-                    coeff[i] = (double)1;
+                    coeff[i] = 1;
                 }
             }
 
@@ -110,8 +110,8 @@ namespace g3
             Vector2d ratio0 = Axis0 / Extent[0];
             Vector2d ratio1 = Axis1 / Extent[1];
             A = new Matrix2d(ratio0, ratio0) + new Matrix2d(ratio1, ratio1);
-            B = ((double)-2) * (A * Center);
-            C = A.QForm(Center, Center) - (double)1;
+            B = -2 * (A * Center);
+            C = A.QForm(Center, Center) - 1;
         }
 
         // construct C, U[i], and e[i] from the quadratic equation.  The return
@@ -172,7 +172,7 @@ namespace g3
             Vector2d diff = point - Center;
             double ratio0 = Axis0.Dot(diff) / Extent[0];
             double ratio1 = Axis1.Dot(diff) / Extent[1];
-            double value = ratio0 * ratio0 + ratio1 * ratio1 - (double)1;
+            double value = ratio0 * ratio0 + ratio1 * ratio1 - 1;
             return value;
         }
 
@@ -182,7 +182,7 @@ namespace g3
         // before the function Evaluate().
         public bool Contains(Vector2d point)
         {
-            return (Evaluate(point) <= (double)0);
+            return (Evaluate(point) <= 0);
         }
 
 

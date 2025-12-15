@@ -16,7 +16,7 @@ namespace g3
             double fRem = fValue % fIncrement;
             if (fRem > fIncrement / 2)
                 ++nInc;
-            return sign * (double)nInc * fIncrement + offset;
+            return sign * nInc * fIncrement + offset;
         }
 
 
@@ -43,7 +43,7 @@ namespace g3
             else if (!low && sign > 0)
                 ++nInc;
 
-            return sign * (double)nInc * fIncrement;
+            return sign * nInc * fIncrement;
 
         }
 

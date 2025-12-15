@@ -71,7 +71,7 @@ namespace g3
         public IndexFlagSet(int MaxIndex, int SubsetCountEst)
         {
             bool bSmall = MaxIndex < 128000;        // 16k in bits is a pretty small buffer?
-            float fPercent = (float)SubsetCountEst / (float)MaxIndex;
+            float fPercent = SubsetCountEst / (float)MaxIndex;
             float fPercentThresh = 0.05f;           
 
             if (bSmall || fPercent > fPercentThresh) { 
@@ -236,7 +236,7 @@ namespace g3
         public IndexMap(int MaxIndex, int SubsetCountEst)
         {
             bool bSmall = MaxIndex < 32000;        // if buffer is less than 128k, just use dense map
-            float fPercent = (float)SubsetCountEst / (float)MaxIndex;
+            float fPercent = SubsetCountEst / (float)MaxIndex;
             float fPercentThresh = 0.1f;
 
             if (bSmall || fPercent > fPercentThresh) {

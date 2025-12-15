@@ -206,7 +206,7 @@ namespace g3
                 centroid += v;
                 N++;
             }
-            return centroid / (double)N;
+            return centroid / N;
         }
 
         public static Vector3d Centroid<T>(IEnumerable<T> values, Func<T, Vector3d> PositionF)
@@ -217,7 +217,7 @@ namespace g3
                 centroid += PositionF(t);
                 N++;
             }
-            return centroid / (double)N;
+            return centroid / N;
         }
 
 
@@ -232,7 +232,7 @@ namespace g3
                         N++;
                     }
                 }
-                return centroid / (double)N;
+                return centroid / N;
             } else
                 return Centroid(mesh.Vertices());
         }
@@ -346,11 +346,11 @@ namespace g3
             Interval1d extent = Interval1d.Empty;
             if (TransformF == null) {
                 foreach (Vector3d v in mesh.Vertices()) 
-                    extent.Contain(v.Dot(ref axis));
+                    extent.Contain(v.Dot(axis));
             } else {
                 foreach (Vector3d v in mesh.Vertices()) {
                     Vector3d vT = TransformF(v);
-                    extent.Contain(vT.Dot(ref axis));
+                    extent.Contain(vT.Dot(axis));
                 }
             }
             return extent;
@@ -365,11 +365,11 @@ namespace g3
             Interval1d extent = Interval1d.Empty;
             if (TransformF == null) {
                 foreach (int vid in mesh.VertexIndices())
-                    extent.Contain(mesh.GetVertex(vid).Dot(ref axis));
+                    extent.Contain(mesh.GetVertex(vid).Dot(axis));
             } else {
                 foreach (int vid in mesh.VertexIndices()) {
                     Vector3d vT = TransformF(mesh.GetVertex(vid));
-                    extent.Contain(vT.Dot(ref axis));
+                    extent.Contain(vT.Dot(axis));
                 }
             }
             return extent;
@@ -388,7 +388,7 @@ namespace g3
             Interval1i extreme = new Interval1i(DMesh3.InvalidID, DMesh3.InvalidID);
             if (TransformF == null) {
                 foreach (int vid in mesh.VertexIndices()) {
-                    double t = mesh.GetVertex(vid).Dot(ref axis);
+                    double t = mesh.GetVertex(vid).Dot(axis);
                     if ( t < extent.a ) {
                         extent.a = t;
                         extreme.a = vid;
@@ -399,7 +399,7 @@ namespace g3
                 }
             } else {
                 foreach (int vid in mesh.VertexIndices()) {
-                    double t = TransformF(mesh.GetVertex(vid)).Dot(ref axis);
+                    double t = TransformF(mesh.GetVertex(vid)).Dot(axis);
                     if (t < extent.a) {
                         extent.a = t;
                         extreme.a = vid;

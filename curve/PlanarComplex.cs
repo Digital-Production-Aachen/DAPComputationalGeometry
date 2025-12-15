@@ -84,14 +84,14 @@ namespace g3
 				return polygon.SegmentItr();
 			}
 			public override AxisAlignedBox2d Bounds() {
-				return polygon.GetBounds();
+				return polygon.Bounds;
 			}
 
             public override Element Clone()
             {
                 SmoothLoopElement loop = new SmoothLoopElement();
                 this.copy_to(loop);
-                loop.polygon = (this.polygon == this.source) ? loop.source as Polygon2d : new Polygon2d(this.polygon);
+                loop.polygon = ReferenceEquals(this.polygon, this.source) ? loop.source as Polygon2d : this.polygon.Duplicate();
                 return loop;
             }
         }
@@ -136,7 +136,7 @@ namespace g3
             SmoothLoopElement e = new SmoothLoopElement();
             e.ID = id_generator++;
             e.source = new Polygon2DCurve() { Polygon = poly };
-            e.polygon = new Polygon2d(poly);
+            e.polygon = poly.Duplicate();
             vElements.Add(e);
             return e;
         }
@@ -510,7 +510,7 @@ namespace g3
 			double fDeviationTol = options.SimplifyDeviationTolerance;
 			Polygon2d[] polygons = new Polygon2d[maxid];
 			foreach ( var v in validLoops ) {
-				Polygon2d p = new Polygon2d(v.polygon);
+				Polygon2d p = v.polygon.Duplicate();
 				if ( fClusterTol > 0 || fDeviationTol > 0 )
 					p.Simplify(fClusterTol, fDeviationTol);
 				polygons[v.ID] = p;
@@ -771,7 +771,7 @@ namespace g3
 				get {
 					AxisAlignedBox2d bounds = AxisAlignedBox2d.Empty;
 					foreach (Polygon2d p in Polygons)
-						bounds.Contain(p.GetBounds());
+						bounds.Contain(p.Bounds);
 					return bounds;
 				}
 			}
@@ -792,7 +792,7 @@ namespace g3
 			Polygon2d[] polygons = new Polygon2d[maxid];
 			IParametricCurve2d[] curves = new IParametricCurve2d[maxid];
 			foreach (var v in loopElems) {
-				Polygon2d p = new Polygon2d(v.polygon);
+				Polygon2d p = v.polygon.Duplicate();
 				if (fClusterTol > 0 || fDeviationTol > 0)
 					p.Simplify(fClusterTol, fDeviationTol);
 				polygons[v.ID] = p;
@@ -915,7 +915,7 @@ namespace g3
             foreach ( var element in vElements ) {
                 if ( element is SmoothLoopElement ) {
                     var loop = element as SmoothLoopElement;
-                    if (bApplyToSources && loop.source != loop.polygon)
+                    if (bApplyToSources && !ReferenceEquals(loop.source, loop.polygon))
                         loop.source.Transform(xform);
 
                     if ( bRecomputePolygons )

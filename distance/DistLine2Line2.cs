@@ -71,21 +71,21 @@ namespace g3
             {
                 // Lines are not parallel.
                 b1 = -diff.Dot(line2.Direction);
-                double invDet = ((double)1)/det;
+                double invDet = 1 / det;
                 s0 = (a01*b1 - b0)*invDet;
                 s1 = (a01*b0 - b1)*invDet;
-                sqrDist = (double)0;
+                sqrDist = 0;
             }
             else
             {
                 // Lines are parallel, select any closest pair of points.
                 s0 = -b0;
-                s1 = (double)0;
+                s1 = 0;
                 sqrDist = b0*s0 + c;
 
                 // Account for numerical round-off errors.
-                if (sqrDist < (double)0)
-                    sqrDist = (double)0;
+                if (sqrDist < 0)
+                    sqrDist = 0;
             }
 
             Line1Parameter = s0;

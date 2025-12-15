@@ -27,16 +27,16 @@ namespace g3
             get { return mMinBox; }
         }
 
-        public ContMinBox2(IList<Vector2d> points, double epsilon, QueryNumberType queryType, bool isConvexPolygon)
+        public ContMinBox2(IReadOnlyList<Vector2d> points, double epsilon, QueryNumberType queryType, bool isConvexPolygon)
         {
             // Get the convex hull of the points.
-            IList<Vector2d> hullPoints;
+            IReadOnlyList<Vector2d> hullPoints;
             int numPoints;
             if (isConvexPolygon) {
                 hullPoints = points;
                 numPoints = hullPoints.Count;
             } else {
-                ConvexHull2 hull = new ConvexHull2(points, epsilon, queryType);
+                ConvexHull2 hull = new ConvexHull2(points, epsilon);
                 int hullDim = hull.Dimension;
                 int hullNumSimplices = hull.NumSimplices;
                 int[] hullIndices = hull.HullIndices;
@@ -45,8 +45,8 @@ namespace g3
                     mMinBox.Center = points[0];
                     mMinBox.AxisX = Vector2d.AxisX;
                     mMinBox.AxisY = Vector2d.AxisY;
-                    mMinBox.Extent[0] = (double)0;
-                    mMinBox.Extent[1] = (double)0;
+                    mMinBox.Extent[0] = 0;
+                    mMinBox.Extent[1] = 0;
                     return;
                 }
 
@@ -171,7 +171,7 @@ namespace g3
                 // Determine the edge that forms the smallest angle with the current
                 // box edges.
                 RCFlags flag = RCFlags.F_NONE;
-                double maxDot = (double)0;
+                double maxDot = 0;
 
                 double dot = U.Dot(edges[BIndex]);
                 if (dot > maxDot) {

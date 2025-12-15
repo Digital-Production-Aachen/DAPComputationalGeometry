@@ -87,7 +87,7 @@ namespace g3
                 det = -det;
             }
 
-            return (det > (double)0 ? +1 : (det < (double)0 ? -1 : 0));
+            return (det > 0 ? +1 : (det < 0 ? -1 : 0));
         }
 
 
@@ -176,7 +176,7 @@ namespace g3
                 det = -det;
             }
 
-            return (det < (double)0 ? 1 : (det > (double)0 ? -1 : 0));
+            return (det < 0 ? 1 : (det > 0 ? -1 : 0));
         }
 
 

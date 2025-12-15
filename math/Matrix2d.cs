@@ -11,6 +11,7 @@ namespace g3
         public static readonly Matrix2d Identity = new Matrix2d(true);
         public static readonly Matrix2d Zero = new Matrix2d(false);
         public static readonly Matrix2d One = new Matrix2d(1, 1, 1, 1);
+        public static readonly Matrix2d Rotation180Deg = new Matrix2d(-1, 0, 0, -1);
 
 
         public Matrix2d(bool bIdentity) {
@@ -154,20 +155,20 @@ namespace g3
             double sum = Math.Abs(m00) + Math.Abs(m11);
             if (Math.Abs(m01) + sum == sum) {
                 // The matrix M is diagonal (within numerical round-off).
-                rot.m00 = (double)1;
-                rot.m01 = (double)0;
-                rot.m10 = (double)0;
-                rot.m11 = (double)1;
+                rot.m00 = 1;
+                rot.m01 = 0;
+                rot.m10 = 0;
+                rot.m11 = 1;
                 diag.m00 = m00;
-                diag.m01 = (double)0;
-                diag.m10 = (double)0;
+                diag.m01 = 0;
+                diag.m10 = 0;
                 diag.m11 = m11;
                 return;
             }
 
             double trace = m00 + m11;
             double diff = m00 - m11;
-            double discr = Math.Sqrt(diff * diff + ((double)4) * m01 * m01);
+            double discr = Math.Sqrt(diff * diff + 4 * m01 * m01);
             double eigVal0 = 0.5 * (trace - discr);
             double eigVal1 = 0.5 * (trace + discr);
             diag.SetToDiagonal(eigVal0, eigVal1);

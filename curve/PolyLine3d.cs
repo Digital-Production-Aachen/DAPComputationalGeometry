@@ -2,15 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 
 namespace g3
 {
-	public class PolyLine3d : IEnumerable<Vector3d>
+	public class PolyLine3d : IEnumerable<Vector3d>, IBoundsProvider
 	{
 		protected List<Vector3d> vertices;
 		public int Timestamp;
+        private int boundsCachedTimeStamp;
+        private AxisAlignedBox3d cachedBounds;
 
-		public PolyLine3d() {
+        public PolyLine3d() {
 			vertices = new List<Vector3d>();
 			Timestamp = 0;
 		}
@@ -32,7 +35,6 @@ namespace g3
 			Timestamp = 0;
 		}
 
-
 		public Vector3d this[int key]
 		{
 			get { return vertices[key]; }
@@ -51,7 +53,17 @@ namespace g3
 			get { return vertices.AsReadOnly(); }
 		}
 
-		public int VertexCount
+        public void SetVerticesCapacity(int capacity) => vertices.Capacity = capacity;
+        public Span<Vector3d> VerticesAsSpan => CollectionsMarshal.AsSpan(vertices);
+        private Span<double> VerticesAsDoubleSpan => MemoryMarshal.Cast<Vector3d, double>(CollectionsMarshal.AsSpan(vertices));
+        public Span<Vector3d> VerticesAsSpanWithCount(int count)
+        {
+            CollectionsMarshal.SetCount(vertices, count);
+            return CollectionsMarshal.AsSpan(vertices);
+        }
+        public ReadOnlySpan<Vector3d> VerticesAsReadOnlySpan => CollectionsMarshal.AsSpan(vertices);
+
+        public int VertexCount
 		{
 			get { return vertices.Count; }
 		}
@@ -73,18 +85,56 @@ namespace g3
 				return (vertices[i + 1] - vertices[i - 1]).Normalized;
 		}
 
+        public AxisAlignedBox3d GetBounds() => Bounds;
 
-		public AxisAlignedBox3d GetBounds() {
-			if ( vertices.Count == 0 )
-				return AxisAlignedBox3d.Empty;
-			AxisAlignedBox3d box = new AxisAlignedBox3d(vertices[0]);
-			for ( int i = 1; i < vertices.Count; ++i )
-				box.Contain(vertices[i]);
-			return box;
-		}
+        public AxisAlignedBox3d CalcBounds()
+        {
+			var vertices = VerticesAsReadOnlySpan;
+            if (vertices.Length == 0)
+                return AxisAlignedBox3d.Empty;
+            AxisAlignedBox3d box = new AxisAlignedBox3d(vertices[0]);
+            for (int i = 1; i < vertices.Length; ++i)
+                box.Contain(vertices[i]);
+            return box;
+        }
 
+        public AxisAlignedBox3d Bounds
+        {
+            get
+            {
+                if (Timestamp > boundsCachedTimeStamp)
+                {
+                    AxisAlignedBox3d calcedBounds;
+                    int tStamp = Timestamp;
+                    calcedBounds = CalcBounds();
+                    cachedBounds = calcedBounds;
+                    System.Threading.Interlocked.MemoryBarrier();
+                    boundsCachedTimeStamp = tStamp;
+                    return calcedBounds;
+                }
+                return cachedBounds;
+            }
+        }
 
-		public IEnumerable<Segment3d> SegmentItr() {
+        public double ArcLength
+        {
+            get
+            {
+                double fLength = 0;
+                ReadOnlySpan<Vector3d> verts = VerticesAsReadOnlySpan;
+                if (verts.Length == 0) return 0.0;
+                Vector3d prev = verts[0], cur;
+                for (int i = 1; i < verts.Length; ++i)
+                {
+                    cur = vertices[i];
+                    fLength += prev.Distance(cur);
+                    prev = cur;
+                }
+                return fLength;
+            }
+        }
+
+        public IEnumerable<Segment3d> SegmentItr() {
 			for ( int i = 0; i < vertices.Count-1; ++i )
 				yield return new Segment3d( vertices[i], vertices[i+1] );
 		}

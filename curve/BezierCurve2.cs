@@ -118,7 +118,7 @@ namespace g3
             }
 
             result += mDer1CtrlPoint[degreeM1] * powT;
-            result *= (double)mDegree;
+            result *= mDegree;
 
             return result;
         }
@@ -138,7 +138,7 @@ namespace g3
             }
 
             result += mDer2CtrlPoint[degreeM2] * powT;
-            result *= (double)(mDegree * (mDegree - 1));
+            result *= mDegree * (mDegree - 1);
 
             return result;
         }
@@ -162,7 +162,7 @@ namespace g3
             }
 
             result += mDer3CtrlPoint[degreeM3] * powT;
-            result *= (double)(mDegree * (mDegree - 1) * (mDegree - 2));
+            result *= mDegree * (mDegree - 1) * (mDegree - 2);
 
             return result;
         }

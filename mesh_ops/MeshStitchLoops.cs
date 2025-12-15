@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using g3;
 
-namespace gs
+namespace g3
 {
     /// <summary>
     /// Stitch together two edge loops without any constraint that they have the same vertex count
@@ -34,12 +34,12 @@ namespace gs
 
         // span represents an interval of loop indices on either side that
         // need to be stitched together
-        struct span
+        struct Span
         {
             public Interval1i span0;
             public Interval1i span1;
         }
-        List<span> spans = new List<span>();
+        List<Span> spans = new List<Span>();
 
 
         public MeshStitchLoops(DMesh3 mesh, EdgeLoop l0, EdgeLoop l1)
@@ -48,7 +48,7 @@ namespace gs
             Loop0 = new EdgeLoop(l0);
             Loop1 = new EdgeLoop(l1);
 
-            span s = new span() {
+            Span s = new Span() {
                 span0 = new Interval1i(0, 0),
                 span1 = new Interval1i(0, 0)
             };
@@ -77,11 +77,11 @@ namespace gs
             pairs.Sort((pair1, pair2) => { return pair1.a.CompareTo(pair2.a); });
 
             // now construct spans
-            List<span> new_spans = new List<span>();
+            List<Span> new_spans = new List<Span>();
             for ( int k = 0; k < pairs.Count; ++k ) {
                 Index2i p1 = pairs[k];
                 Index2i p2 = pairs[(k + 1) % pairs.Count];
-                span s = new span() {
+                Span s = new Span() {
                     span0 = new Interval1i(p1.a, p2.a),
                     span1 = new Interval1i(p1.b, p2.b)
                 };
@@ -104,7 +104,7 @@ namespace gs
 
             int NS = spans.Count;
             for ( int si = 0; si < NS; si++ ) {
-                span s = spans[si];
+                Span s = spans[si];
 
                 if (stitch_span_simple(s, gid) == false)
                     all_ok = false;
@@ -119,7 +119,7 @@ namespace gs
         /// this just does back-and-forth zippering, of as many quads as possible, and
         /// then a triangle-fan to finish whichever side is longer
         /// </summary>
-        bool stitch_span_simple(span s, int gid)
+        bool stitch_span_simple(Span s, int gid)
         {
             bool all_ok = true;
 

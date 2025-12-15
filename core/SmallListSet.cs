@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace g3
@@ -45,7 +46,6 @@ namespace g3
             free_blocks = new DVector<int>();
         }
 
-
         public SmallListSet(SmallListSet copy)
         {
             linked_store = new DVector<int>(copy.linked_store);
@@ -54,7 +54,6 @@ namespace g3
             block_store = new DVector<int>(copy.block_store);
             free_blocks = new DVector<int>(copy.free_blocks);
         }
-
 
         /// <summary>
         /// returns largest current list_index
@@ -76,7 +75,6 @@ namespace g3
             }
         }
 
-
         /// <summary>
         /// create a new list at list_index
         /// </summary>
@@ -95,7 +93,6 @@ namespace g3
                     throw new Exception("SmallListSet: list at " + list_index + " is not empty!");
             }
         }
-
 
         /// <summary>
         /// insert val into list at list_index. 
@@ -135,8 +132,6 @@ namespace g3
             // count new element
             block_store[block_ptr] += 1;
         }
-
-
 
         /// <summary>
         /// remove val from the list at list_index. return false if val was not in list.
@@ -179,8 +174,6 @@ namespace g3
             return false;
         }
 
-
-
         /// <summary>
         /// move list at from_index to to_index
         /// </summary>
@@ -193,11 +186,6 @@ namespace g3
             list_heads[to_index] = list_heads[from_index];
             list_heads[from_index] = Null;
         }
-
-
-
-
-
 
         /// <summary>
         /// remove all elements from list at list_index
@@ -284,29 +272,112 @@ namespace g3
         /// <summary>
         /// iterate over the values of list at list_index
         /// </summary>
-        public IEnumerable<int> ValueItr(int list_index)
+        public SmallListValueItr ValueItr(int list_index) => new SmallListValueItr(this, list_index);        
+
+        public readonly struct SmallListValueItr : IEnumerable<int>
         {
-            int block_ptr = list_heads[list_index];
-            if (block_ptr != Null) {
-                int N = block_store[block_ptr];
-                if ( N < BLOCKSIZE ) {
-                    int iEnd = block_ptr + N;
-                    for (int i = block_ptr + 1; i <= iEnd; ++i)
-                        yield return block_store[i];
-                } else {
-                    // we spilled to linked list, have to iterate through it as well
-                    int iEnd = block_ptr + BLOCKSIZE;
-                    for (int i = block_ptr + 1; i <= iEnd; ++i)
-                        yield return block_store[i];
-                    int cur_ptr = block_store[block_ptr + BLOCK_LIST_OFFSET];
-                    while (cur_ptr != Null) {
-                        yield return linked_store[cur_ptr];
-                        cur_ptr = linked_store[cur_ptr + 1];
-                    }
-                }
+            readonly SmallListSet owner;
+            readonly int listIndex;
+
+            internal SmallListValueItr(SmallListSet owner, int listIndex)
+            {
+                this.owner = owner;
+                this.listIndex = listIndex;
             }
+
+            public SmallListEnumerator GetEnumerator() => new SmallListEnumerator(owner, listIndex);
+            IEnumerator<int> IEnumerable<int>.GetEnumerator() => GetEnumerator();
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
+        public struct SmallListEnumerator : IEnumerator<int>
+        {
+            readonly SmallListSet owner;
+            readonly int blockPtr;
+            int i;
+            int iEnd;
+            int curPtr;
+            int state; // 0 = finished/no-list, 1 = iterating short block, 2 = iterating block then linked
+            public int Current { get; private set; }
+
+            object IEnumerator.Current => Current;
+
+            internal SmallListEnumerator(SmallListSet owner, int listIndex)
+            {
+                this.owner = owner;
+                this.blockPtr = owner.list_heads[listIndex];
+                Reset();
+            }
+
+            void Reset()
+            {
+                this.Current = default;
+                if (blockPtr != Null)
+                {
+                    int N = owner.block_store[blockPtr];
+                    if (N < BLOCKSIZE)
+                    {
+                        i = blockPtr + 1;
+                        iEnd = blockPtr + N;
+                        curPtr = Null;
+                        state = 1;
+                    }
+                    else
+                    {
+                        i = blockPtr + 1;
+                        iEnd = blockPtr + BLOCKSIZE;
+                        curPtr = owner.block_store[blockPtr + BLOCK_LIST_OFFSET];
+                        state = 2;
+                    }
+                }
+                else
+                {
+                    // no list
+                    i = 0;
+                    iEnd = -1;
+                    curPtr = Null;
+                    state = 0;
+                }
+            }
+
+            public bool MoveNext()
+            {
+                if (state == 0) return false;
+
+                // iterate items stored directly in block
+                if (i <= iEnd)
+                {
+                    Current = owner.block_store[i++];
+                    return true;
+                }
+
+                // if we were in short-block mode, we are done
+                if (state == 1)
+                {
+                    state = 0;
+                    return false;
+                }
+
+                // state == 2: we finished the block portion; iterate linked list
+                if (state == 2)
+                {
+                    if (curPtr != Null)
+                    {
+                        Current = owner.linked_store[curPtr];
+                        curPtr = owner.linked_store[curPtr + 1];
+                        return true;
+                    }
+
+                    state = 0;
+                    return false;
+                }
+
+                return false;
+            }
+
+            public void Dispose() { }
+            void IEnumerator.Reset() => Reset();
+        }
 
         /// <summary>
         /// search for findF(list_value) == true, of list at list_index, and return list_value
@@ -389,8 +460,6 @@ namespace g3
             return false;
         }
 
-
-
         // grab a block from the free list, or allocate a new one
         protected int allocate_block()
         {
@@ -415,7 +484,6 @@ namespace g3
             free_head_ptr = ptr;
         }
 
-
         // remove val from the linked-list attached to block_ptr
         bool remove_from_linked_list(int block_ptr, int val)
         {
@@ -438,8 +506,6 @@ namespace g3
             return false;
         }
 
-
-
         public string MemoryUsage
         {
             get {
@@ -447,7 +513,5 @@ namespace g3
                     list_heads.size, allocated_count, free_blocks.size * sizeof(int) / 1024, block_store.size, linked_store.size * sizeof(int) / 1024);
             }
         }
-
-
     }
 }

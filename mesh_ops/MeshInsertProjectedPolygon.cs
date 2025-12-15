@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using g3;
 
-namespace gs
+namespace g3
 {
     /// <summary>
     /// Inserts a polygon into a mesh using a planar projection. You provide a
@@ -88,7 +88,7 @@ namespace gs
         public MeshInsertProjectedPolygon(DMesh3 mesh, Polygon2d poly, Frame3f frame, int seedTri)
         {
             Mesh = mesh;
-            Polygon = new Polygon2d(poly);
+            Polygon = poly.Duplicate();
             ProjectFrame = frame;
             SeedTriangle = seedTri;
         }
@@ -221,7 +221,7 @@ namespace gs
                 int tid = projecter.FindNearestTriangle(v);
                 Index3i tri = projectMesh.GetTriangle(tid);
                 projectMesh.GetTriVertices(tid, ref a, ref b, ref c);
-                Vector3d bary = MathUtil.BarycentricCoords(ref v, ref a, ref b, ref c);
+                Vector3d bary = MathUtil.BarycentricCoords(v, a, b, c);
                 Vector3d pos = bary.x * initialPositions[tri.a] + bary.y * initialPositions[tri.b] + bary.z * initialPositions[tri.c];
 
                 roiMesh.SetVertex(vid, pos);

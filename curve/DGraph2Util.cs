@@ -240,7 +240,7 @@ namespace g3
         }
         static Polygon2d to_loop(PolyLine2d p1, PolyLine2d p2, double eps = MathUtil.Epsilon)
         {
-            Polygon2d p = new Polygon2d(p1.Vertices);
+            Polygon2d p = SharedPolyPool.Rent(p1.Vertices);
             if (p1.End.Distance(p2.Start) > eps)
                 p2.Reverse();
             p.AppendVertices(p2);

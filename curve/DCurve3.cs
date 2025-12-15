@@ -254,7 +254,7 @@ namespace g3
             int i = -1;
             int N = vertices.Count;
             for ( int vi = 0; vi < N; ++vi ) {
-                double distSqr = vertices[vi].DistanceSquared(ref p);
+                double distSqr = vertices[vi].DistanceSquared(p);
                 if ( distSqr < nearSqr ) {
                     nearSqr = distSqr;
                     i = vi;

@@ -161,10 +161,8 @@ namespace g3
             
         }
 
-
-
         // [RMS] estimate can be zero
-        void compute(IEnumerable<int> triangles, int tri_count_est )
+        void compute(IEnumerable<int> triangles, int tri_count_est)
         {
             int est_verts = tri_count_est / 2;
 
@@ -208,15 +206,7 @@ namespace g3
                     SubToBaseT.insert(tid, sub_tid);
                 }
             }
-
-
-
-
         }
-
-
-
-
 
         public static DMesh3 QuickSubmesh(DMesh3 mesh, int[] triangles) {
             DSubmesh3 submesh = new DSubmesh3(mesh, triangles);
@@ -225,6 +215,5 @@ namespace g3
         public static DMesh3 QuickSubmesh(DMesh3 mesh, IEnumerable<int> triangles) {
             return QuickSubmesh(mesh, triangles.ToArray());
         }
-
     }
 }

@@ -16,7 +16,7 @@ namespace g3
             rom[0, 0] = ((double)0.5) * h * (function(a, userData) + function(b, userData));
             for (int i0 = 2, p0 = 1; i0 <= order; ++i0, p0 *= 2, h *= (double)0.5) {
                 // Approximations via the trapezoid rule.
-                double sum = (double)0;
+                double sum = 0;
                 int i1;
                 for (i1 = 1; i1 <= p0; ++i1)
                     sum += function(a + h * (i1 - ((double)0.5)), userData);
@@ -37,9 +37,9 @@ namespace g3
 
         // these are for GaussianQuadrature, because C# cannot have a static const array inside a method
         private static readonly double[] root = {
-            (double)-0.9061798459, (double)-0.5384693101, (double) 0.0, (double)+0.5384693101, (double)+0.9061798459 };
+            -0.9061798459, -0.5384693101,  0.0, +0.5384693101, +0.9061798459 };
         private static readonly double[] coeff = {
-            (double)0.2369268850, (double)0.4786286705, (double)0.5688888889, (double)0.4786286705, (double)0.2369268850 };
+            0.2369268850, 0.4786286705, 0.5688888889, 0.4786286705, 0.2369268850 };
 
         public static double GaussianQuadrature(double a, double b, Func<double,object,double> function, object userData)
         {
@@ -68,7 +68,7 @@ namespace g3
             double radius = ((double)0.5) * (b - a);
             double center = ((double)0.5) * (b + a);
 
-            double result = (double)0;
+            double result = 0;
             for (int i = 0; i < degree; ++i) {
                 result += coeff[i] * function(radius * root[i] + center, userData);
             }
@@ -85,7 +85,7 @@ namespace g3
                 throw new Exception("Integrate1d.TrapezoidRule: Must have more than two samples\n");
 
 
-            double h = (b - a) / (double)(numSamples - 1);
+            double h = (b - a) / (numSamples - 1);
             double result = ((double)0.5) * (function(a, userData) +
                 function(b, userData));
 

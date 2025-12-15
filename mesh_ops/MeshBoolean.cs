@@ -121,7 +121,7 @@ namespace g3
             int near_vid = DMesh3.InvalidID;
             double nearSqr = VertexSnapTol * VertexSnapTol;
             foreach ( int vid in vertices ) {
-                double dSqr = mesh.GetVertex(vid).DistanceSquared(ref v);
+                double dSqr = mesh.GetVertex(vid).DistanceSquared(v);
                 if ( dSqr < nearSqr ) {
                     near_vid = vid;
                     nearSqr = dSqr;

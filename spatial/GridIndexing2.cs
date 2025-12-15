@@ -80,14 +80,14 @@ namespace g3
 
 		public Vector2d FromGrid(Vector2i gridpoint) {
 			return new Vector2d(
-				((double)gridpoint.x * CellSize),
-				((double)gridpoint.y * CellSize));
+				(gridpoint.x * CellSize),
+				(gridpoint.y * CellSize));
 		}
 
 		public Vector2d FromGrid(Vector2d gridpointf) {
 			return new Vector2d(
-				((double)gridpointf.x * CellSize),
-				((double)gridpointf.y * CellSize));
+				(gridpointf.x * CellSize),
+				(gridpointf.y * CellSize));
 		}
 	}
 
@@ -114,14 +114,14 @@ namespace g3
 
 		public Vector2d FromGrid(Vector2i gridpoint) {
 			return new Vector2d(
-				((double)gridpoint.x * CellSize) + Origin.x,
-				((double)gridpoint.y * CellSize) + Origin.y);
+				(gridpoint.x * CellSize) + Origin.x,
+				(gridpoint.y * CellSize) + Origin.y);
 		}
 
 		public Vector2d FromGrid(Vector2d gridpointf) {
 			return new Vector2d(
-				((double)gridpointf.x * CellSize) + Origin.x,
-				((double)gridpointf.y * CellSize) + Origin.y);
+				(gridpointf.x * CellSize) + Origin.x,
+				(gridpointf.y * CellSize) + Origin.y);
 		}
 	}
 
@@ -146,8 +146,8 @@ namespace g3
         public Vector2i ToBlockIndex(Vector2i outer_index)
         {
             Vector2i block_index = outer_index - OuterShift;
-            block_index.x = (block_index.x >= 0) ? (int)(block_index.x / BlockSize.x) : ((int)(block_index.x / BlockSize.x) - 1);
-            block_index.y = (block_index.y >= 0) ? (int)(block_index.y / BlockSize.y) : ((int)(block_index.y / BlockSize.y) - 1);
+            block_index.x = (block_index.x >= 0) ? block_index.x / BlockSize.x : (block_index.x / BlockSize.x - 1);
+            block_index.y = (block_index.y >= 0) ? block_index.y / BlockSize.y : (block_index.y / BlockSize.y - 1);
             return block_index - BlockShift;
         }
 
@@ -160,8 +160,8 @@ namespace g3
         public GridLevelIndex2 ToBlock(Vector2i outer_index)
         {
             Vector2i block_index = outer_index - OuterShift;
-            block_index.x = (block_index.x >= 0) ? (int)(block_index.x / BlockSize.x) : ((int)(block_index.x / BlockSize.x) - 1);
-            block_index.y = (block_index.y >= 0) ? (int)(block_index.y / BlockSize.y) : ((int)(block_index.y / BlockSize.y) - 1);
+            block_index.x = (block_index.x >= 0) ? block_index.x / BlockSize.x : (block_index.x / BlockSize.x - 1);
+            block_index.y = (block_index.y >= 0) ? block_index.y / BlockSize.y : (block_index.y / BlockSize.y - 1);
             block_index -= BlockShift;
             return new GridLevelIndex2() {
                 block_index = block_index,

@@ -96,7 +96,7 @@ namespace g3
             AWdU.x = Math.Abs(WdU.x);
             DdU.x = diff.x; // diff.Dot(Vector3d.AxisX);
             ADdU.x = Math.Abs(DdU.x);
-            if (ADdU.x > extent.x && DdU.x * WdU.x >= (double)0) {
+            if (ADdU.x > extent.x && DdU.x * WdU.x >= 0) {
                 return false;
             }
 
@@ -104,7 +104,7 @@ namespace g3
             AWdU.y = Math.Abs(WdU.y);
             DdU.y = diff.y; // diff.Dot(Vector3d.AxisY);
             ADdU.y = Math.Abs(DdU.y);
-            if (ADdU.y > extent.y && DdU.y * WdU.y >= (double)0) {
+            if (ADdU.y > extent.y && DdU.y * WdU.y >= 0) {
                 return false;
             }
 
@@ -112,7 +112,7 @@ namespace g3
             AWdU.z = Math.Abs(WdU.z);
             DdU.z = diff.z; // diff.Dot(Vector3d.AxisZ);
             ADdU.z = Math.Abs(DdU.z);
-            if (ADdU.z > extent.z && DdU.z * WdU.z >= (double)0) {
+            if (ADdU.z > extent.z && DdU.z * WdU.z >= 0) {
                 return false;
             }
 

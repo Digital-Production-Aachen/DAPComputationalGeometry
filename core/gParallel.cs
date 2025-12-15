@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace g3
             foreach (T v in source)
                 body(v);
         }
-        public static void ForEach<T>( IEnumerable<T> source, Action<T> body )
+        public static void ForEach<T>(IEnumerable<T> source, Action<T> body)
         {
 #if G3_USING_UNITY && (NET_2_0 || NET_2_0_SUBSET)
             for_each<T>(source, body);
@@ -34,7 +35,8 @@ namespace g3
         public static void Evaluate(params Action[] funcs)
         {
             int N = funcs.Length;
-            gParallel.ForEach(Interval1i.Range(N), (i) => {
+            gParallel.ForEach(Interval1i.Range(N), (i) =>
+            {
                 funcs[i]();
             });
         }
@@ -46,29 +48,35 @@ namespace g3
         /// Blocksize is automatically determind unless you specify one.
         /// Iterate over [start,end] *inclusive* in each block
         /// </summary>
-        public static void BlockStartEnd(int iStart, int iEnd, Action<int,int> blockF, int iBlockSize = -1, bool bDisableParallel = false )
+        public static void BlockStartEnd(int iStart, int iEnd, Action<int, int> blockF, int iBlockSize = -1, bool bDisableParallel = false)
         {
             if (iBlockSize == -1)
                 iBlockSize = 100;  // seems to work
             int N = (iEnd - iStart + 1);
             int num_blocks = N / iBlockSize;
             // process main blocks in parallel
-            if (bDisableParallel) {
-                ForEach_Sequential(Interval1i.Range(num_blocks), (bi) => {
+            if (bDisableParallel)
+            {
+                ForEach_Sequential(Interval1i.Range(num_blocks), (bi) =>
+                {
                     int k = iStart + iBlockSize * bi;
                     blockF(k, k + iBlockSize - 1);
                 });
-            } else {
-                ForEach(Interval1i.Range(num_blocks), (bi) => {
+            }
+            else
+            {
+                ForEach(Interval1i.Range(num_blocks), (bi) =>
+                {
                     int k = iStart + iBlockSize * bi;
                     blockF(k, k + iBlockSize - 1);
                 });
             }
             // process leftover elements
             int remaining = N - (num_blocks * iBlockSize);
-            if (remaining > 0) {
+            if (remaining > 0)
+            {
                 int k = iStart + num_blocks * iBlockSize;
-                blockF(k, k+remaining-1);
+                blockF(k, k + remaining - 1);
             }
         }
 
@@ -76,22 +84,28 @@ namespace g3
 
         // parallel for-each that will work on .net 3.5 (maybe?)
         // adapted from https://www.microsoft.com/en-us/download/details.aspx?id=19222
-        static void for_each<T>( IEnumerable<T> source, Action<T> body )
+        static void for_each<T>(IEnumerable<T> source, Action<T> body)
         {
             int numProcs = Environment.ProcessorCount;
             int remainingWorkItems = numProcs;
             Exception last_exception = null;
-            using (var enumerator = source.GetEnumerator()) {
-                using (ManualResetEvent mre = new ManualResetEvent(false)) {
+            using (var enumerator = source.GetEnumerator())
+            {
+                using (ManualResetEvent mre = new ManualResetEvent(false))
+                {
                     // Create each of the work items.
-                    for (int p = 0; p < numProcs; p++) {
-                        ThreadPool.QueueUserWorkItem(delegate {
+                    for (int p = 0; p < numProcs; p++)
+                    {
+                        ThreadPool.QueueUserWorkItem(delegate
+                        {
                             // Iterate until there's no more work.
-                            while (true) {
+                            while (true)
+                            {
                                 // Get the next item under a lock,
                                 // then process that item.
                                 T nextItem;
-                                lock (enumerator) {
+                                lock (enumerator)
+                                {
                                     if (!enumerator.MoveNext())
                                         break;
                                     nextItem = enumerator.Current;
@@ -101,9 +115,12 @@ namespace g3
                                 // then one thread breaks out of loop, and somehow we end up hung forever.
                                 // (Maybe the WaitOne() on other threads never finishes?)
                                 // Anyway, we will just hold onto the exception and throw it at the end.
-                                try {
+                                try
+                                {
                                     body(nextItem);
-                                } catch (Exception e) {
+                                }
+                                catch (Exception e)
+                                {
                                     last_exception = e;
                                     break;
                                 }
@@ -154,14 +171,14 @@ namespace g3
         //public List<Action<T>> Operators = new List<Action<T>>();
         public Action<T> ConsumerF = null;
 
-        LockingQueue<T> store0 = new LockingQueue<T>();
+        BlockingCollection<T> store0 = new BlockingCollection<T>();
         IEnumerable<V> source = null;
 
-
         // this is the non-threaded variant. useful for comparing/etc.
-        public void Run_NoThreads( IEnumerable<V> sourceIn )
+        public void Run_NoThreads(IEnumerable<V> sourceIn)
         {
-            foreach ( V v in sourceIn ) {
+            foreach (V v in sourceIn)
+            {
                 T product = ProducerF(v);
                 //foreach (var op in Operators)
                 //    op(product);
@@ -169,57 +186,39 @@ namespace g3
             }
         }
 
-
-        bool producer_done = false;
-        AutoResetEvent consumer_done_event;
-
-        //int max_queue_size = 0;
-
-        public void Run( IEnumerable<V> sourceIn )
+        public void Run(IEnumerable<V> sourceIn)
         {
             source = sourceIn;
-            producer_done = false;
-            consumer_done_event = new AutoResetEvent(false);
 
-            Thread producer = new Thread(ProducerThreadFunc);
-            producer.Name = "ParallelStream_producer";
+            Task producer = new Task(ProducerThreadFunc);
             producer.Start();
-            Thread consumer = new Thread(ConsumerThreadFunc);
-            consumer.Name = "ParallelStream_consumer";
+
+            Task consumer = new Task(ConsumerThreadFunc);
             consumer.Start();
 
             // wait for threads to finish
-            consumer_done_event.WaitOne();
-
-            //System.Console.WriteLine("MAX QUEUE SIZE " + max_queue_size);       
+            Task.WaitAll([producer, consumer]);    
         }
 
-
-
-        void ProducerThreadFunc() {
-            foreach ( V v in source ) {
+        void ProducerThreadFunc()
+        {
+            foreach (V v in source)
+            {
                 T product = ProducerF(v);
                 store0.Add(product);
             }
-            producer_done = true;
+            store0.CompleteAdding();
         }
-
 
         void ConsumerThreadFunc()
         {
-            // this just spins...is that a good idea??
-
-            T next = default(T);
-            while ( producer_done == false || store0.Count > 0 ) {
-                //max_queue_size = Math.Max(max_queue_size, store0.Count);
-                bool ok = store0.Remove(ref next);
+            while (!store0.IsCompleted)
+            {
+                bool ok = store0.TryTake(out T next);
                 if (ok)
                     ConsumerF(next);
             }
-
-            consumer_done_event.Set();
         }
-
     }
 
 
@@ -245,11 +244,15 @@ namespace g3
 
         public bool Remove(ref T val)
         {
-            lock (queue_lock) {
-                if (queue.Count > 0) {
+            lock (queue_lock)
+            {
+                if (queue.Count > 0)
+                {
                     val = queue.Dequeue();
                     return true;
-                } else {
+                }
+                else
+                {
                     return false;
                 }
             }
@@ -257,14 +260,18 @@ namespace g3
 
         public void Add(T obj)
         {
-            lock (queue_lock) {
+            lock (queue_lock)
+            {
                 queue.Enqueue(obj);
             }
         }
 
-        public int Count {
-            get {
-                lock (queue_lock) {
+        public int Count
+        {
+            get
+            {
+                lock (queue_lock)
+                {
                     return queue.Count;
                 }
             }

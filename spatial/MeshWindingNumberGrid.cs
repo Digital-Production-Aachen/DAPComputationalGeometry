@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using g3;
 
-namespace gs
+namespace g3
 {
 
     /// <summary>
@@ -125,9 +125,9 @@ namespace gs
 
         public Vector3f CellCenter(int i, int j, int k)
         {
-            return new Vector3f((float)i * CellSize + grid_origin.x,
-                                (float)j * CellSize + grid_origin.y,
-                                (float)k * CellSize + grid_origin.z);
+            return new Vector3f(i * CellSize + grid_origin.x,
+                                j * CellSize + grid_origin.y,
+                                k * CellSize + grid_origin.z);
         }
 
 
@@ -173,7 +173,7 @@ namespace gs
                     float dist = distances[ijk];
                     // this could be tighter? but I don't think it matters...
                     if (dist < CellSize) {
-                        Vector3d gx = new Vector3d((float)ijk.x * dx + origin[0], (float)ijk.y * dx + origin[1], (float)ijk.z * dx + origin[2]);
+                        Vector3d gx = new Vector3d(ijk.x * dx + origin[0], ijk.y * dx + origin[1], ijk.z * dx + origin[2]);
                         winding[ijk] = (float)MeshSpatial.WindingNumber(gx);
                     }
                 }
@@ -231,7 +231,7 @@ namespace gs
                             continue;
                         float val2 = winding[nijk];
                         if (val2 == float.MaxValue) {
-                            Vector3d gx = new Vector3d((float)nijk.x * dx + origin[0], (float)nijk.y * dx + origin[1], (float)nijk.z * dx + origin[2]);
+                            Vector3d gx = new Vector3d(nijk.x * dx + origin[0], nijk.y * dx + origin[1], nijk.z * dx + origin[2]);
                             val2 = (float)MeshSpatial.WindingNumber(gx);
                             winding[nijk] = val2;
                         }
@@ -269,7 +269,7 @@ namespace gs
                         filled++;
                 }
                 System.Console.WriteLine("filled: {0} / {1}  -  {2}%", filled, ni * nj * nk,
-                                    (double)filled / (double)(ni * nj * nk) * 100.0);
+                                    filled / (double)(ni * nj * nk) * 100.0);
             }
 
             if (CancelF())
@@ -307,7 +307,7 @@ namespace gs
                 if (abort)
                     return;
 
-                Vector3d gx = new Vector3d((float)ijk.x * dx + origin[0], (float)ijk.y * dx + origin[1], (float)ijk.z * dx + origin[2]);
+                Vector3d gx = new Vector3d(ijk.x * dx + origin[0], ijk.y * dx + origin[1], ijk.z * dx + origin[2]);
                 winding[ijk] = (float)MeshSpatial.WindingNumber(gx);
             });
 

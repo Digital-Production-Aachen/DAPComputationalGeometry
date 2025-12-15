@@ -48,7 +48,7 @@ namespace g3
         {
             fRayT = 0.0;
             Vector3d m = vOrigin - vCenter;
-            double b = m.Dot(ref vDirection);
+            double b = m.Dot(vDirection);
             double c = m.Dot(m) - fRadius * fRadius;
 
             // Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0) 

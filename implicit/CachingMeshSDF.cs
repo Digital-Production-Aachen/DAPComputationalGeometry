@@ -121,7 +121,7 @@ namespace g3
             int nj = (int)((max.y - grid_origin.y) / CellSize) + 1;
             int nk = (int)((max.z - grid_origin.z) / CellSize) + 1;
 
-            UpperBoundDistance = (float)((ni+nj+nk) * CellSize);
+            UpperBoundDistance = (ni + nj + nk) * CellSize;
             grid = new DenseGrid3f(ni, nj, nk, UpperBoundDistance);
 
             MaxDistQueryDist = MaxOffsetDistance + (2*CellSize*MathUtil.SqrtTwo);
@@ -228,9 +228,9 @@ namespace g3
         }
         Vector3f cell_center(Vector3i ijk)
         {
-            return new Vector3f((float)ijk.x * CellSize + grid_origin[0],
-                                (float)ijk.y * CellSize + grid_origin[1],
-                                (float)ijk.z * CellSize + grid_origin[2]);
+            return new Vector3f(ijk.x * CellSize + grid_origin[0],
+                                ijk.y * CellSize + grid_origin[1],
+                                ijk.z * CellSize + grid_origin[2]);
         }
 
 
@@ -260,7 +260,7 @@ namespace g3
 
                 bool neg_x = false;
                 if (InsideMode == InsideModes.ParityCount) {
-                    Vector3d n = MathUtil.FastNormalDirection(ref xp, ref xq, ref xr);
+                    Vector3d n = MathUtil.FastNormalDirection(xp, xq, xr);
                     neg_x = n.x > 0;
                 }
 
@@ -461,9 +461,9 @@ namespace g3
                 return Outside;
 
             // convert double coords to [0,1] range
-            double fAx = gridPt.x - (double)x0;
-            double fAy = gridPt.y - (double)y0;
-            double fAz = gridPt.z - (double)z0;
+            double fAx = gridPt.x - x0;
+            double fAy = gridPt.y - y0;
+            double fAz = gridPt.z - z0;
             double OneMinusfAx = 1.0 - fAx;
 
             // compute trilinear interpolant. The code below tries to do this with the fewest 
@@ -533,9 +533,9 @@ namespace g3
             int z0 = (int)gridPt.z, z1 = z0 + 1;
 
             // convert double coords to [0,1] range
-            double fAx = gridPt.x - (double)x0;
-            double fAy = gridPt.y - (double)y0;
-            double fAz = gridPt.z - (double)z0;
+            double fAx = gridPt.x - x0;
+            double fAy = gridPt.y - y0;
+            double fAz = gridPt.z - z0;
 
             double fV000, fV100;
             get_value_pair(x0, y0, z0, out fV000, out fV100);

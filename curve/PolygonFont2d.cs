@@ -89,14 +89,14 @@ namespace g3
             writer.Write(SerializerVersion);   // version number
 
             int nc = font.Characters.Count;
-            writer.Write((int)nc);
+            writer.Write(nc);
 
             foreach (var pair in font.Characters) {
                 byte[] stringbuf = Encoding.Unicode.GetBytes(pair.Key);
-                writer.Write((int)stringbuf.Length);
+                writer.Write(stringbuf.Length);
                 writer.Write(stringbuf);
                 CharacterInfo ci = pair.Value;
-                writer.Write((int)ci.Polygons.Length);
+                writer.Write(ci.Polygons.Length);
                 for (int k = 0; k < ci.Polygons.Length; ++k)
                     gSerialization.Store(ci.Polygons[k], writer);
             }

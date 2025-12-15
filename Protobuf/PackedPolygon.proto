@@ -1,0 +1,14 @@
+syntax = "proto3";
+package g3.Proto;
+option csharp_namespace = "g3.Proto";
+
+message PackedPolygons {
+    repeated PackedPolygon Polygons = 1;
+}
+
+message PackedPolygon {
+    repeated sint32 DeltaCoords = 1;
+    repeated float FloatCoords = 2;
+    uint64 UpProps = 3;
+    uint64 DownProps = 4;
+}

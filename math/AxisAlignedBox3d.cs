@@ -2,7 +2,7 @@ using System;
 
 namespace g3
 {
-    public struct AxisAlignedBox3d : IComparable<AxisAlignedBox3d>, IEquatable<AxisAlignedBox3d>
+    public struct AxisAlignedBox3d : IComparable<AxisAlignedBox3d>, IEquatable<AxisAlignedBox3d>, IBoundsProvider
     {
         public Vector3d Min;
         public Vector3d Max;
@@ -99,6 +99,8 @@ namespace g3
         public Vector3d Center {
             get { return new Vector3d(0.5 * (Min.x + Max.x), 0.5 * (Min.y + Max.y), 0.5 * (Min.z + Max.z)); }
         }
+
+        public AxisAlignedBox3d Bounds => this;
 
         public static bool operator ==(AxisAlignedBox3d a, AxisAlignedBox3d b) {
             return a.Min == b.Min && a.Max == b.Max;
@@ -217,16 +219,7 @@ namespace g3
             Max.z = Math.Max(Max.z, v.z);
         }
 
-        public void Contain(AxisAlignedBox3d box) {
-            Min.x = Math.Min(Min.x, box.Min.x);
-            Min.y = Math.Min(Min.y, box.Min.y);
-            Min.z = Math.Min(Min.z, box.Min.z);
-            Max.x = Math.Max(Max.x, box.Max.x);
-            Max.y = Math.Max(Max.y, box.Max.y);
-            Max.z = Math.Max(Max.z, box.Max.z);
-        }
-
-        public void Contain(ref AxisAlignedBox3d box) {
+        public void Contain(in AxisAlignedBox3d box) {
             Min.x = Math.Min(Min.x, box.Min.x);
             Min.y = Math.Min(Min.y, box.Min.y);
             Min.z = Math.Min(Min.z, box.Min.z);
@@ -244,8 +237,6 @@ namespace g3
             else
                 return intersect;
         }
-
-
 
         public bool Contains(Vector3d v) {
             return (Min.x <= v.x) && (Min.y <= v.y) && (Min.z <= v.z)
@@ -269,8 +260,6 @@ namespace g3
                 || (box.Max.y <= Min.y) || (box.Min.y >= Max.y)
                 || (box.Max.z <= Min.z) || (box.Min.z >= Max.z) );
         }
-
-
 
         public double DistanceSquared(Vector3d v)
         {

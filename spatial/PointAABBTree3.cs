@@ -376,7 +376,7 @@ namespace g3
             if (FastWindingCache.TryGetValue(iBox, out cacheInfo) == false)
                 return false;
 
-            double dist_qp = cacheInfo.Center.Distance(ref q);
+            double dist_qp = cacheInfo.Center.Distance(q);
             if (dist_qp > FWNBeta * cacheInfo.R)
                 return true;
 
@@ -759,7 +759,7 @@ namespace g3
         protected bool box_contains(int iBox, Vector3d p)
         {
             // [TODO] this could be way faster...
-            Vector3d c = (Vector3d)box_centers[iBox];
+            Vector3d c = box_centers[iBox];
             Vector3d e = box_extents[iBox];
             AxisAlignedBox3d box = new AxisAlignedBox3d(ref c, e.x + box_eps, e.y + box_eps, e.z + box_eps);
             return box.Contains(p);

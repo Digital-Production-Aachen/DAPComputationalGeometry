@@ -26,9 +26,9 @@ namespace g3 {
 		{
             double fLenT = curve.ParamLength;
 			VectorArray2d vec = new VectorArray2d(N);
-            double divide = (curve.IsClosed) ? (double)N : (double)(N - 1);
+            double divide = (curve.IsClosed) ? N : N - 1;
 			for ( int i = 0; i < N; ++i ) {
-				double t = (double)i / divide;
+				double t = i / divide;
 				vec[i] = curve.SampleT(t * fLenT);
 			}
 			return vec;
@@ -39,7 +39,7 @@ namespace g3 {
 		{
 			VectorArray2d vec = new VectorArray2d(N);
 			for ( int i = 0; i < N; ++i ) {
-				double alpha = (double)i / (double)(N-1);
+				double alpha = i / (double)(N-1);
                 double t = (1 - alpha) * t0 + alpha * t1;
 				vec[i] = curve.SampleT(t);
 			}
@@ -56,7 +56,7 @@ namespace g3 {
 			VectorArray2d vec = new VectorArray2d(nSteps);
 
 			for ( int i = 0; i < nSteps; ++i ) {
-				double t = (double)i / (double)(nSteps-1);
+				double t = i / (double)(nSteps-1);
 				vec[i] = curve.SampleT(t * fLenT);
 			}
 
@@ -81,7 +81,7 @@ namespace g3 {
 			VectorArray2d vec = new VectorArray2d(nSteps);
 
 			for ( int i = 0; i < nSteps; ++i ) {
-				double t = (double)i / (double)(nSteps-1);
+				double t = i / (double)(nSteps-1);
 				vec[i] = curve.SampleArcLength(t * fLen);
 			}
 
@@ -122,7 +122,7 @@ namespace g3 {
 
 				VectorArray2d vec = new VectorArray2d(nSteps);
 				for ( int j = 0; j < nSteps; ++j ) {
-					double a = (double)j * div;
+					double a = j * div;
 					double t = (1-a)*t0 + (a)*t1;
 					vec[j] = curve.SampleT(t);
 				}

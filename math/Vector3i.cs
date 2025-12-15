@@ -173,13 +173,13 @@ namespace g3
             return new Vector3i((int)v.x, (int)v.y, (int)v.z);
         }
         public static explicit operator Vector3f(Vector3i v) {
-            return new Vector3f((float)v.x, (float)v.y, (float)v.z);
+            return new Vector3f(v.x, v.y, v.z);
         }
         public static explicit operator Vector3i(Vector3d v) {
             return new Vector3i((int)v.x, (int)v.y, (int)v.z);
         }
         public static explicit operator Vector3d(Vector3i v) {
-            return new Vector3d((double)v.x, (double)v.y, (double)v.z);
+            return new Vector3d(v.x, v.y, v.z);
         }
 
     }

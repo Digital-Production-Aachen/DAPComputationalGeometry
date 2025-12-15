@@ -157,9 +157,9 @@ namespace g3
             // add vertex rows
             int start_vi = vi;
             for (int yi = 0; yi < N; ++yi) {
-                double ty = (double)yi / (double)(N - 1);
+                double ty = yi / (double)(N - 1);
                 for (int xi = 0; xi < N; ++xi) {
-                    double tx = (double)xi / (double)(N - 1);
+                    double tx = xi / (double)(N - 1);
                     normals[vi] = Normal;
                     uv[vi] = bilerp(ref uv00, ref uv01, ref uv11, ref uv10, (float)tx, (float)ty);
                     vertices[vi++] = bilerp(ref v00, ref v01, ref v11, ref v10, tx, ty);
@@ -360,7 +360,7 @@ namespace g3
                     startangle[i], endangle[i]);
                 int use_steps = (sharp) ? 1 : CornerSteps;
                 for (int k = 0; k < use_steps; ++k) {
-                    double t = (double)(i + 1) / (double)(use_steps + 1);
+                    double t = (i + 1) / (double)(use_steps + 1);
                     Vector2d pos = arc.SampleT(t);
                     vertices[vi++] = new Vector3d(pos.x, 0, pos.y);
                 }

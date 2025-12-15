@@ -40,7 +40,7 @@ namespace g3
 
 
 		public Vector2d Corner(int i) {
-			double angle_deg = 60.0 * (double)i;
+			double angle_deg = 60.0 * i;
 			if (TopMode == TopModes.Tip)
 				angle_deg += 30;
 			double angle_rad = angle_deg * MathUtil.Deg2Rad;

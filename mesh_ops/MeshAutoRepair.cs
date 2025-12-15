@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using g3;
 
-namespace gs
+namespace g3
 {
     /// <summary>
     /// Mesh Auto Repair top-level driver.
@@ -60,7 +60,6 @@ namespace gs
 		{
 			Mesh = mesh3;
 		}
-
 
 		public bool Apply()
 		{
@@ -197,10 +196,7 @@ namespace gs
 			return true;
 		}
 
-
-
-
-		void fill_trivial_holes(out int nRemaining, out bool saw_spans)
+        void fill_trivial_holes(out int nRemaining, out bool saw_spans)
 		{
 			MeshBoundaryLoops loops = new MeshBoundaryLoops(Mesh);
 			nRemaining = 0;

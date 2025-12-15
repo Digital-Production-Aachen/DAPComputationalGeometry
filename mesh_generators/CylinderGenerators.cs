@@ -32,11 +32,11 @@ namespace g3
             float fStartRad = StartAngleDeg * MathUtil.Deg2Radf;
             float fDelta = (bClosed) ? fTotalRange / Slices : fTotalRange / (Slices - 1);
             for (int k = 0; k < nRingSize; ++k) {
-                float angle = fStartRad + (float)k * fDelta;
+                float angle = fStartRad + k * fDelta;
                 double cosa = Math.Cos(angle), sina = Math.Sin(angle);
                 vertices[k] = new Vector3d(BaseRadius * cosa, 0, BaseRadius * sina);
                 vertices[nRingSize + k] = new Vector3d(TopRadius * cosa, Height, TopRadius * sina);
-                float t = (float)k / (float)Slices;
+                float t = k / (float)Slices;
                 uv[k] = new Vector2f(t, 0.0f);
                 uv[nRingSize + k] = new Vector2f(t, 1.0f);
                 Vector3f n = new Vector3f((float)cosa, 0, (float)sina);
@@ -103,11 +103,11 @@ namespace g3
 
             // generate top and bottom rings for cylinder
             for (int k = 0; k < nRingSize; ++k) {
-                float angle = fStartRad + (float)k * fDelta;
+                float angle = fStartRad + k * fDelta;
                 double cosa = Math.Cos(angle), sina = Math.Sin(angle);
                 vertices[k] = new Vector3d(BaseRadius * cosa, 0, BaseRadius * sina);
                 vertices[nRingSize + k] = new Vector3d(TopRadius * cosa, Height, TopRadius * sina);
-                float t = (float)k / (float)Slices;
+                float t = k / (float)Slices;
                 uv[k] = new Vector2f(t, 0.0f);
                 uv[nRingSize + k] = new Vector2f(t, 1.0f);
                 Vector3f n = new Vector3f((float)cosa, 0, (float)sina);
@@ -143,7 +143,7 @@ namespace g3
             if (NoSharedVertices) {
                 int nStartB = 2 * nRingSize + 2;
                 for (int k = 0; k < Slices; ++k) {
-                    float a = fStartRad + (float)k * fDelta;
+                    float a = fStartRad + k * fDelta;
                     double cosa = Math.Cos(a), sina = Math.Sin(a);
                     vertices[nStartB + k] = new Vector3d(BaseRadius * cosa, 0, BaseRadius * sina);
                     uv[nStartB + k] = new Vector2f(0.5f * (1.0f + cosa), 0.5f * (1 + sina));
@@ -153,7 +153,7 @@ namespace g3
 
                 int nStartT = 2 * nRingSize + 2 + Slices;
                 for (int k = 0; k < Slices; ++k) {
-                    float a = fStartRad + (float)k * fDelta;
+                    float a = fStartRad + k * fDelta;
                     double cosa = Math.Cos(a), sina = Math.Sin(a);
                     vertices[nStartT + k] = new Vector3d(TopRadius * cosa, Height, TopRadius * sina);
                     uv[nStartT + k] = new Vector2f(0.5f * (1.0f + cosa), 0.5f * (1 + sina));
@@ -240,7 +240,7 @@ namespace g3
 
             // generate rings
             for (int k = 0; k < nRingSize; ++k) {
-                float angle = fStartRad + (float)k * fDelta;
+                float angle = fStartRad + k * fDelta;
                 double cosa = Math.Cos(angle), sina = Math.Sin(angle);
                 vertices[k] = new Vector3d(BaseRadius * cosa, 0, BaseRadius * sina);
                 uv[k] = new Vector2f(0.5f * (1.0f + cosa), 0.5f * (1 + sina));
@@ -279,7 +279,7 @@ namespace g3
             if (NoSharedVertices) {
                 int nStartB = nBottomC + 1;
                 for (int k = 0; k < Slices; ++k) {
-                    float a = fStartRad + (float)k * fDelta;
+                    float a = fStartRad + k * fDelta;
                     double cosa = Math.Cos(a), sina = Math.Sin(a);
                     vertices[nStartB + k] = new Vector3d(BaseRadius * cosa, 0, BaseRadius * sina);
                     uv[nStartB + k] = new Vector2f(0.5f * (1.0f + cosa), 0.5f * (1 + sina));
@@ -362,10 +362,10 @@ namespace g3
                 float yt = (y - Sections[0].SectionY) / fYSpan;
                 for (int j = 0; j < nRingSize; ++j) {
                     int k = nStartR + j;
-                    float angle = (float)j * fDelta;
+                    float angle = j * fDelta;
                     double cosa = Math.Cos(angle), sina = Math.Sin(angle);
                     vertices[k] = new Vector3d(Sections[si].Radius * cosa, y, Sections[si].Radius * sina);
-                    float t = (float)j / (float)(Slices - 1);
+                    float t = j / (float)(Slices - 1);
                     uv[k] = new Vector2f(t, yt);
                     Vector3f n = new Vector3f((float)cosa, 0, (float)sina);
                     n.Normalize();
@@ -414,7 +414,7 @@ namespace g3
                 if (NoSharedVertices) {
                     int nStartB = nTopC + 1;
                     for (int k = 0; k < Slices; ++k) {
-                        float a = (float)k * fDelta;
+                        float a = k * fDelta;
                         double cosa = Math.Cos(a), sina = Math.Sin(a);
                         vertices[nStartB + k] = new Vector3d(s0.Radius * cosa, s0.SectionY, s0.Radius * sina);
                         uv[nStartB + k] = new Vector2f(0.5f * (1.0f + cosa), 0.5f * (1 + sina));
@@ -424,7 +424,7 @@ namespace g3
 
                     int nStartT = nStartB + Slices;
                     for (int k = 0; k < Slices; ++k) {
-                        float a = (float)k * fDelta;
+                        float a = k * fDelta;
                         double cosa = Math.Cos(a), sina = Math.Sin(a);
                         vertices[nStartT + k] = new Vector3d(sN.Radius * cosa, sN.SectionY, sN.Radius * sina);
                         uv[nStartT + k] = new Vector2f(0.5f * (1.0f + cosa), 0.5f * (1 + sina));

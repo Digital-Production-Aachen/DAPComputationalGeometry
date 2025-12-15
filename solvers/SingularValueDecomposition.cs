@@ -87,9 +87,9 @@ namespace g3
                     }
                 }
 
-                double norm = (double)0;
-                if (maxAbsComp > (double)0) {
-                    double invMaxAbsComp = ((double)1) / maxAbsComp;
+                double norm = 0;
+                if (maxAbsComp > 0) {
+                    double invMaxAbsComp = 1 / maxAbsComp;
                     for (int i = 0; i < numElements; ++i) {
                         double ratio = input[i] * invMaxAbsComp;
                         norm += ratio * ratio;
@@ -97,7 +97,7 @@ namespace g3
                     norm = maxAbsComp * Math.Sqrt(norm);
                 }
 
-                double multiplier = (double)8;  // TODO: Expose to caller.
+                double multiplier = 8;  // TODO: Expose to caller.
                 double epsilon = double.Epsilon;
                 double threshold = multiplier * epsilon * norm;
 
@@ -179,7 +179,7 @@ namespace g3
             // Start with the identity matrix.
             Array.Clear(uMatrix, 0, uMatrix.Length);
             for (int d = 0; d < mNumRows; ++d) {
-                uMatrix[d + mNumRows * d] = (double)1;
+                uMatrix[d + mNumRows * d] = 1;
             }
 
             // Multiply the Householder reflections using backward accumulation.
@@ -188,7 +188,7 @@ namespace g3
                 // Copy the u vector and 2/Dot(u,u) from the matrix.
                 double twoinvudu = mTwoInvUTU[i0];
                 //double const* column = &mMatrix[i0];
-                mUVector[i0] = (double)1;
+                mUVector[i0] = 1;
                 for (r = i1; r < mNumRows; ++r) {
                     //mUVector[r] = column[mNumCols * r];
                     mUVector[r] = mMatrix[i0 + (mNumCols * r)];
@@ -197,7 +197,7 @@ namespace g3
                 // Compute the w vector.
                 mWVector[i0] = twoinvudu;
                 for (r = i1; r < mNumRows; ++r) {
-                    mWVector[r] = (double)0;
+                    mWVector[r] = 0;
                     for (c = i1; c < mNumRows; ++c) {
                         mWVector[r] += mUVector[c] * uMatrix[r + mNumRows * c];
                     }
@@ -264,7 +264,7 @@ namespace g3
             // Start with the identity matrix.
             Array.Clear(vMatrix, 0, vMatrix.Length);
             for (int d = 0; d < mNumCols; ++d) {
-                vMatrix[d + mNumCols * d] = (double)1;
+                vMatrix[d + mNumCols * d] = 1;
             }
 
             // Multiply the Householder reflections using backward accumulation.
@@ -276,7 +276,7 @@ namespace g3
                 // Copy the v vector and 2/Dot(v,v) from the matrix.
                 double twoinvvdv = mTwoInvVTV[i0];
                 //double const* row = &mMatrix[mNumCols * i0];      // [RMS] port
-                mVVector[i1] = (double)1;
+                mVVector[i1] = 1;
                 for (r = i2; r < mNumCols; ++r) {
                     //mVVector[r] = row[r];         // [RMS] port
                     mVVector[r] = mMatrix[mNumCols * i0 + r];
@@ -285,7 +285,7 @@ namespace g3
                 // Compute the w vector.
                 mWVector[i1] = twoinvvdv;
                 for (r = i2; r < mNumCols; ++r) {
-                    mWVector[r] = (double)0;
+                    mWVector[r] = 0;
                     for (c = i2; c < mNumCols; ++c) {
                         mWVector[r] += mVVector[c] * vMatrix[r + mNumCols * c];
                     }
@@ -368,19 +368,19 @@ namespace g3
             int r, c;
             for (int i = 0, ip1 = 1; i < mNumCols; ++i, ++ip1) {
                 // Compute the U-Householder vector.
-                double length = (double)0;
+                double length = 0;
                 for (r = i; r < mNumRows; ++r) {
                     double ur = mMatrix[i + mNumCols * r];
                     mUVector[r] = ur;
                     length += ur * ur;
                 }
-                double udu = (double)1;
+                double udu = 1;
                 length = Math.Sqrt(length);
-                if (length > (double)0) {
+                if (length > 0) {
                     double u1 = mUVector[i];
-                    double sgn = (u1 >= (double)0 ? (double)1 : (double) - 1);
-                    double invDenom = ((double)1) / (u1 + sgn * length);
-                    mUVector[i] = (double)1;
+                    double sgn = (u1 >= 0 ? 1 : -1);
+                    double invDenom = 1 / (u1 + sgn * length);
+                    mUVector[i] = 1;
                     for (r = ip1; r < mNumRows; ++r) {
                         mUVector[r] *= invDenom;
                         udu += mUVector[r] * mUVector[r];
@@ -388,10 +388,10 @@ namespace g3
                 }
 
                 // Compute the rank-1 offset u*w^T.
-                double invudu = (double)1 / udu;
-                double twoinvudu = invudu * (double)2;
+                double invudu = 1 / udu;
+                double twoinvudu = invudu * 2;
                 for (c = i; c < mNumCols; ++c) {
-                    mWVector[c] = (double)0;
+                    mWVector[c] = 0;
                     for (r = i; r < mNumRows; ++r) {
                         mWVector[c] += mMatrix[c + mNumCols * r] * mUVector[r];
                     }
@@ -407,19 +407,19 @@ namespace g3
 
                 if (i < mNumCols - 2) {
                     // Compute the V-Householder vectors.
-                    length = (double)0;
+                    length = 0;
                     for (c = ip1; c < mNumCols; ++c) {
                         double vc = mMatrix[c + mNumCols * i];
                         mVVector[c] = vc;
                         length += vc * vc;
                     }
-                    double vdv = (double)1;
+                    double vdv = 1;
                     length = Math.Sqrt(length);
-                    if (length > (double)0) {
+                    if (length > 0) {
                         double v1 = mVVector[ip1];
-                        double sgn = (v1 >= (double)0 ? (double)1 : (double) - 1);
-                        double invDenom = ((double)1) / (v1 + sgn * length);
-                        mVVector[ip1] = (double)1;
+                        double sgn = (v1 >= 0 ? 1 : -1);
+                        double invDenom = 1 / (v1 + sgn * length);
+                        mVVector[ip1] = 1;
                         for (c = ip1 + 1; c < mNumCols; ++c) {
                             mVVector[c] *= invDenom;
                             vdv += mVVector[c] * mVVector[c];
@@ -427,10 +427,10 @@ namespace g3
                     }
 
                     // Compute the rank-1 offset w*v^T.
-                    double invvdv = (double)1 / vdv;
-                    double twoinvvdv = invvdv * (double)2;
+                    double invvdv = 1 / vdv;
+                    double twoinvvdv = invvdv * 2;
                     for (r = i; r < mNumRows; ++r) {
-                        mWVector[r] = (double)0;
+                        mWVector[r] = 0;
                         for (c = ip1; c < mNumCols; ++c) {
                             mWVector[r] += mMatrix[c + mNumCols * r] * mVVector[c];
                         }
@@ -471,19 +471,19 @@ namespace g3
         {
             // Solves sn*x + cs*y = 0 robustly.
             double tau;
-            if (y != (double)0) {
+            if (y != 0) {
                 if (Math.Abs(y) > Math.Abs(x)) {
                     tau = -x / y;
-                    sn = ((double)1) / Math.Sqrt(((double)1) + tau * tau);
+                    sn = 1 / Math.Sqrt(1 + tau * tau);
                     cs = sn * tau;
                 } else {
                     tau = -y / x;
-                    cs = ((double)1) / Math.Sqrt(((double)1) + tau * tau);
+                    cs = 1 / Math.Sqrt(1 + tau * tau);
                     sn = cs * tau;
                 }
             } else {
-                cs = (double)1;
-                sn = (double)0;
+                cs = 1;
+                sn = 0;
             }
         }
 
@@ -499,7 +499,7 @@ namespace g3
                     // the matrix, thus producing a row of zeros.
                     double x, z, cs, sn;
                     double y = mSuperdiagonal[i];
-                    mSuperdiagonal[i] = (double)0;
+                    mSuperdiagonal[i] = 0;
                     for (int j = i + 1; j <= imax + 1; ++j) {
                         x = mDiagonal[j];
                         GetSinCos(x, y, out cs, out sn);
@@ -523,7 +523,7 @@ namespace g3
         {
             // The implicit shift.  Compute the eigenvalue u of the lower-right 2x2
             // block of A = B^T*B that is closer to b11.
-            double f0 = (imax >= (double)1 ? mSuperdiagonal[imax - 1] : (double)0);
+            double f0 = (imax >= (double)1 ? mSuperdiagonal[imax - 1] : 0);
             double d1 = mDiagonal[imax];
             double f1 = mSuperdiagonal[imax];
             double d2 = mDiagonal[imax + 1];
@@ -531,14 +531,14 @@ namespace g3
             double a01 = d1 * f1;
             double a11 = d2 * d2 + f1 * f1;
             double dif = (a00 - a11) * (double)0.5;
-            double sgn = (dif >= (double)0 ? (double)1 : (double) - 1);
+            double sgn = (dif >= 0 ? 1 : -1);
             double a01sqr = a01 * a01;
             double u = a11 - a01sqr / (dif + sgn * Math.Sqrt(dif * dif + a01sqr));
             double x = mDiagonal[imin] * mDiagonal[imin] - u;
             double y = mDiagonal[imin] * mSuperdiagonal[imin];
 
             double a12, a21, a22, a23, cs, sn;
-            double a02 = (double)0;
+            double a02 = 0;
             int i0 = imin - 1, i1 = imin, i2 = imin + 1;
             for (/**/; i1 <= imax; ++i0, ++i1, ++i2) {
                 // Compute the Givens rotation G and save it for use in computing

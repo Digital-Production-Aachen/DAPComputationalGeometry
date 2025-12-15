@@ -21,7 +21,6 @@ namespace g3
 			Radius = radius;
 		}
 
-
         public double Curvature
         {
             get { return 1.0 / Radius; }
@@ -52,7 +51,60 @@ namespace g3
             Radius = xform.TransformScalar(Radius);
         }
 
+        /// <summary>
+        /// increases the circle radius to contain the given point, if necessary
+        /// </summary>
+        /// <param name="circle"></param>
+        /// <param name="point"></param>
+        public void Contain(Vector2d point)
+        {
+            var centerDistSqrd = (point - Center).LengthSquared;
+            if (centerDistSqrd > Radius * Radius)
+            {
+                Radius = Math.Sqrt(centerDistSqrd);
+            }
+        }
 
+        public bool Contains(g3.Circle2d circle2)
+        {
+            return
+                circle2.Center.x + circle2.Radius < Center.x + Radius &&
+                circle2.Center.x - circle2.Radius > Center.x - Radius &&
+                circle2.Center.y + circle2.Radius < Center.y + Radius &&
+                circle2.Center.y - circle2.Radius > Center.y - Radius;
+        }
+
+        public bool Contains(Polygon2d polygon)
+        {
+            foreach (var vertex in polygon.Vertices)
+            {
+                if (!Contains(vertex)) return false;
+            }
+            return true;
+        }
+
+        public bool IsOutside(Polygon2d polygon)
+        {
+            foreach (var vertex in polygon.Vertices)
+            {
+                if (Contains(vertex)) return false;
+            }
+            return true;
+        }
+
+        public bool Contains(GeneralPolygon2d polygon)
+        {
+            if (polygon.Outer.Contains(this))
+            {
+                foreach (var hole in polygon.Holes)
+                {
+                    if (!IsOutside(hole))
+                        return false;
+                }
+                return true;
+            }
+            else return false;
+        }
 
         // angle in range [0,360] (but works for any value, obviously)
         public Vector2d SampleDeg(double degrees)
@@ -156,7 +208,7 @@ namespace g3
         /// Radius of n-sided regular polygon that contains circle of radius r
         /// </summary>
         public static double BoundingPolygonRadius(double r, int n) {
-            double theta = (MathUtil.TwoPI / (double)n) / 2.0;
+            double theta = (MathUtil.TwoPI / n) / 2.0;
             return r / Math.Cos(theta);
         }
     }

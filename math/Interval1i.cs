@@ -19,7 +19,6 @@ namespace g3
         public Interval1i(int[] v2) { a = v2[0]; b = v2[1]; }
         public Interval1i(Interval1i copy) { a = copy.a; b = copy.b; }
 
-
         static public readonly Interval1i Zero = new Interval1i(0, 0);
 		static public readonly Interval1i Empty = new Interval1i(int.MaxValue, -int.MaxValue);
 		static public readonly Interval1i Infinite = new Interval1i(-int.MaxValue, int.MaxValue);
@@ -33,11 +32,8 @@ namespace g3
         /// <summary> construct interval [start, start+N-1] </summary>
         static public Interval1i Range(int start, int N) { return new Interval1i(start, start+N - 1); }
 
-
 		/// <summary> construct interval [a, b] </summary>
 		static public Interval1i FromToInclusive(int a, int b) { return new Interval1i(a, b); }
-
-
 
         public int this[int key]
         {
@@ -45,14 +41,19 @@ namespace g3
             set { if (key == 0) a = value; else b = value; }
         }
 
-
         public int LengthSquared
         {
 			get { return (a-b)*(a-b); }
         }
+
         public int Length
         {
             get { return b-a; }
+        }
+
+        public int CountInclusive
+        {
+            get { return b - a + 1; }
         }
 
         public int Center {
@@ -70,7 +71,6 @@ namespace g3
 			return d >= a && d <= b;
 		}
 
-
 		public bool Overlaps(Interval1i o) {
 			return ! ( o.a > b || o.b < a ); 
 		}
@@ -83,6 +83,7 @@ namespace g3
 			else
 				return 0;
         }
+
         public int Dist(Interval1i o) {
 			if ( b < o.a )
 				return o.a - b;
@@ -92,7 +93,6 @@ namespace g3
 				return 0;
         }
 
-
         public void Set(Interval1i o) {
             a = o.a; b = o.b;
         }
@@ -100,12 +100,9 @@ namespace g3
             a = fA; b = fB;
         }
 
-
-
 		public static Interval1i operator -(Interval1i v) {
 			return new Interval1i(-v.a, -v.b);
 		}
-
 
         public static Interval1i operator +(Interval1i a, int f) {
             return new Interval1i(a.a + f, a.b + f);
@@ -118,7 +115,6 @@ namespace g3
             return new Interval1i(a.a * f, a.b * f);
         }
 
-
         public IEnumerator<int> GetEnumerator() {
             for (int i = a; i <= b; ++i)
                 yield return i;
@@ -130,7 +126,5 @@ namespace g3
         public override string ToString() {
             return string.Format("[{0},{1}]", a, b);
         }
-
-
     }
 }

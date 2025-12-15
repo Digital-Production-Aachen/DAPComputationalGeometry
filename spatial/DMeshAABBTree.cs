@@ -217,7 +217,7 @@ namespace g3
                         continue;
                     Vector3i tv = mesh.GetTriangle(ti);
                     for ( int j = 0; j < 3; ++j ) {
-                        double dsqr = mesh.GetVertex(tv[j]).DistanceSquared(ref p);
+                        double dsqr = mesh.GetVertex(tv[j]).DistanceSquared(p);
                         if (  dsqr < fNearestSqr ) {
                             fNearestSqr = dsqr;
                             vid = tv[j];
@@ -1099,7 +1099,7 @@ namespace g3
                 for (int i = 1; i <= num_tris; ++i) {
                     int ti = index_list[idx + i];
                     mesh.GetTriVertices(ti, ref a, ref b, ref c);
-                    branch_sum += MathUtil.TriSolidAngle(a, b, c, ref p);
+                    branch_sum += MathUtil.TriSolidAngle(a, b, c, p);
                 }
 
             } else {                                // internal node, either 1 or 2 child boxes
@@ -1254,7 +1254,7 @@ namespace g3
             for (int i = 0; i < N; ++i) {
                 Vector3d a = Mesh.GetVertex(boxcache[2 * i]);
                 Vector3d b = Mesh.GetVertex(boxcache[2 * i + 1]);
-                cluster_sum += MathUtil.TriSolidAngle(a, b, c, ref p);
+                cluster_sum += MathUtil.TriSolidAngle(a, b, c, p);
             }
             // contribution of open mesh is -sum over fan
             return -cluster_sum;
@@ -1332,7 +1332,7 @@ namespace g3
                 for (int i = 1; i <= num_tris; ++i) {
                     int ti = index_list[idx + i];
                     mesh.GetTriVertices(ti, ref a, ref b, ref c);
-                    branch_sum += MathUtil.TriSolidAngle(a, b, c, ref p) / MathUtil.FourPI;
+                    branch_sum += MathUtil.TriSolidAngle(a, b, c, p) / MathUtil.FourPI;
                 }
 
             } else {                                // internal node, either 1 or 2 child boxes
@@ -1458,7 +1458,7 @@ namespace g3
             if (FastWindingCache.TryGetValue(iBox, out cacheInfo) == false)
                 return false;
 
-            double dist_qp = cacheInfo.Center.Distance(ref q);
+            double dist_qp = cacheInfo.Center.Distance(q);
             if (dist_qp > FWNBeta * cacheInfo.R)
                 return true;
 

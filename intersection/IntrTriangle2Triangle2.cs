@@ -135,11 +135,11 @@ namespace g3
 			for (int i = 0; i < 3; ++i)
 			{
 				double t = D.Dot(V[i] - P);
-				if (t > (double)0)
+				if (t > 0)
 				{
 					++positive;
 				}
-				else if (t < (double)0)
+				else if (t < 0)
 				{
 					++negative;
 				}
@@ -174,7 +174,7 @@ namespace g3
 			for (i = 0; i < quantity; ++i)
 			{
 				test[i] = N.Dot(V[i]) - c;
-				if (test[i] > (double)0)
+				if (test[i] > 0)
 				{
 					positive++;
 					if (pIndex < 0)
@@ -182,7 +182,7 @@ namespace g3
 						pIndex = i;
 					}
 				}
-				else if (test[i] < (double)0)
+				else if (test[i] < 0)
 				{
 					negative++;
 				}
@@ -205,7 +205,7 @@ namespace g3
 						CV[cQuantity++] = V[cur] + t*(V[prv] - V[cur]);
 
 						// Vertices on positive side of line.
-						while (cur < quantity && test[cur] > (double)0) {
+						while (cur < quantity && test[cur] > 0) {
 							CV[cQuantity++] = V[cur++];
 						}
 
@@ -223,7 +223,7 @@ namespace g3
 					{
 						// Vertices on positive side of line.
 						cur = 0;
-						while (cur < quantity && test[cur] > (double)0)
+						while (cur < quantity && test[cur] > 0)
 						{
 							CV[cQuantity++] = V[cur++];
 						}
@@ -234,7 +234,7 @@ namespace g3
 						CV[cQuantity++] = V[cur] + t*(V[prv] - V[cur]);
 
 						// Skip vertices on negative side.
-						while (cur < quantity && test[cur] <= (double)0)
+						while (cur < quantity && test[cur] <= 0)
 						{
 							++cur;
 						}
@@ -247,7 +247,7 @@ namespace g3
 							CV[cQuantity++] = V[cur] + t*(V[prv] - V[cur]);
 
 							// Vertices on positive side of line.
-							while (cur < quantity && test[cur] > (double)0)
+							while (cur < quantity && test[cur] > 0)
 							{
 								CV[cQuantity++] = V[cur++];
 							}

@@ -55,7 +55,7 @@ namespace g3
             Vector2d diff = point - box.Center;
 
             // Compute squared distance and closest point on box.
-            double sqrDistance = (double)0;
+            double sqrDistance = 0;
             double delta;
             Vector2d closest = Vector2d.Zero;
             int i;

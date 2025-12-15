@@ -23,7 +23,7 @@ namespace g3
             zeroValue = ZeroValue;
 
             bool bSmall = MaxIndex > 0 && MaxIndex < 1024;
-            float fPercent = (MaxIndex == 0) ? 0 : (float)SubsetCountEst / (float)MaxIndex;
+            float fPercent = (MaxIndex == 0) ? 0 : SubsetCountEst / (float)MaxIndex;
             float fPercentThresh = 0.1f;
 
             if (bSmall || fPercent > fPercentThresh) {
@@ -123,7 +123,7 @@ namespace g3
         public SparseObjectList(int MaxIndex, int SubsetCountEst)
         {
             bool bSmall = MaxIndex < 1024;
-            float fPercent = (float)SubsetCountEst / (float)MaxIndex;
+            float fPercent = SubsetCountEst / (float)MaxIndex;
             float fPercentThresh = 0.1f;
 
             if (bSmall || fPercent > fPercentThresh) {

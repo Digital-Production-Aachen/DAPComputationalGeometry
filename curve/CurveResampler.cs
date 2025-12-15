@@ -39,7 +39,7 @@ namespace g3
                     double fLen = Math.Sqrt(lengths[i]);
                     int nSteps = (int)(fLen / fMaxEdgeLen) + 1;
                     for ( int k = 1; k < nSteps; ++k ) {
-                        double t = (double)k / (double)nSteps;
+                        double t = k / (double)nSteps;
                         Vector3d mid = Vector3d.Lerp(prev, next, t);
                         vNew.Add(mid);
                     }
@@ -109,7 +109,7 @@ namespace g3
                     double fLen = Math.Sqrt(lengths[i]);
                     int nSteps = (int)(fLen / fMaxEdgeLen) + 1;
                     for (int k = 1; k < nSteps; ++k) {
-                        double t = (double)k / (double)nSteps;
+                        double t = k / (double)nSteps;
                         Vector3d mid = Vector3d.Lerp(prev, next, t);
                         vNew.Add(mid);
                     }

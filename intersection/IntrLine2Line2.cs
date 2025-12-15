@@ -92,7 +92,7 @@ namespace g3
 		             double dotThreshold, ref Vector2d s)
 		{
 			// Ensure dotThreshold is nonnegative.
-			dotThreshold = Math.Max(dotThreshold, (double)0);
+			dotThreshold = Math.Max(dotThreshold, 0);
 
 			// The intersection of two lines is a solution to P0+s0*D0 = P1+s1*D1.
 			// Rewrite this as s0*D0 - s1*D1 = P1 - P0 = Q.  If D0.Dot(Perp(D1)) = 0,
@@ -106,7 +106,7 @@ namespace g3
 			double D0DotPerpD1 = D0.DotPerp(D1);
 			if ( Math.Abs(D0DotPerpD1) > dotThreshold) {
 			// Lines intersect in a single point.
-				double invD0DotPerpD1 = ((double)1)/D0DotPerpD1;
+				double invD0DotPerpD1 = 1 / D0DotPerpD1;
 				double diffDotPerpD0 = diff.DotPerp(D0);
 				double diffDotPerpD1 = diff.DotPerp(D1);
 				s[0] = diffDotPerpD1*invD0DotPerpD1;

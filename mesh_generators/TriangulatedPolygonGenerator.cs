@@ -13,7 +13,7 @@ namespace g3
 
         public TrivialRectGenerator.UVModes UVMode = TrivialRectGenerator.UVModes.FullUVSquare;
 
-		public int Subdivisions = 1;
+        public int Subdivisions = 1;
 
         override public MeshGenerator Generate()
         {
@@ -26,7 +26,8 @@ namespace g3
             vertices = new VectorArray3d(NV);
             uv = new VectorArray2f(NV);
             normals = new VectorArray3f(NV);
-            for (int vi = 0; vi < NV; ++vi) {
+            for (int vi = 0; vi < NV; ++vi)
+            {
                 vertices[vi] = compact.GetVertex(vi);
                 uv[vi] = compact.GetVertexUV(vi);
                 normals[vi] = FixedNormal;
@@ -40,9 +41,6 @@ namespace g3
             return this;
         }
 
-
-
-
         /// <summary>
         /// Actually computes the insertion. In some cases we would like more info
         /// coming back than we get by using Generate() api. Note that resulting
@@ -54,24 +52,26 @@ namespace g3
             double padding = 0.1 * bounds.DiagonalLength;
             bounds.Expand(padding);
 
-			TrivialRectGenerator rectgen = (Subdivisions == 1) ?
-				new TrivialRectGenerator() : new GriddedRectGenerator() { EdgeVertices = Subdivisions };
+            TrivialRectGenerator rectgen = (Subdivisions == 1) ?
+                new TrivialRectGenerator() : new GriddedRectGenerator() { EdgeVertices = Subdivisions };
 
-			rectgen.Width = (float)bounds.Width;
-			rectgen.Height = (float)bounds.Height;
-			rectgen.IndicesMap = new Index2i(1, 2);
-			rectgen.UVMode = UVMode;
-			rectgen.Clockwise = true;   // MeshPolygonInserter assumes mesh faces are CW? (except code says CCW...)
-			rectgen.Generate();
-			DMesh3 base_mesh = new DMesh3();
-			rectgen.MakeMesh(base_mesh);
+            rectgen.Width = (float)bounds.Width;
+            rectgen.Height = (float)bounds.Height;
+            rectgen.IndicesMap = new Index2i(1, 2);
+            rectgen.UVMode = UVMode;
+            rectgen.Clockwise = true;   // MeshPolygonInserter assumes mesh faces are CW? (except code says CCW...)
+            rectgen.Generate();
+            DMesh3 base_mesh = new DMesh3();
+            rectgen.MakeMesh(base_mesh);
 
             GeneralPolygon2d shiftPolygon = new GeneralPolygon2d(Polygon);
             Vector2d shift = bounds.Center;
             shiftPolygon.Translate(-shift);
 
-            MeshInsertPolygon insert = new MeshInsertPolygon() {
-                Mesh = base_mesh, Polygon = shiftPolygon
+            MeshInsertPolygon insert = new MeshInsertPolygon()
+            {
+                Mesh = base_mesh,
+                Polygon = shiftPolygon
             };
             bool bOK = insert.Insert();
             if (!bOK)
@@ -87,14 +87,5 @@ namespace g3
             insertion = insert;
             return base_mesh;
         }
-
-
-
-
     }
-
-
-
-
-
 }

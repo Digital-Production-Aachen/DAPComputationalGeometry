@@ -24,7 +24,7 @@ namespace g3
 			double tMax = c.ParamLength;
 			double min_dist = double.MaxValue;
 			for ( int i = 0; i <= N; ++i ) {
-				double fT = (double)i / (double)N;
+				double fT = i / (double)N;
 				fT *= tMax;
 				Vector2d p = c.SampleT(fT);
 				double d = p.DistanceSquared(point);
@@ -104,7 +104,7 @@ namespace g3
                 count++;
             }
             if (count > 1)
-                c /= (double)count;
+                c /= count;
             return c;
         }
 
@@ -161,7 +161,7 @@ namespace g3
         public static void LaplacianSmoothConstrained(Polygon2d poly, double alpha, int iterations, 
             double max_dist, bool bAllowShrink, bool bAllowGrow, bool bPerVertexDistances = true)
         {
-            Polygon2d origPoly = new Polygon2d(poly);
+            Polygon2d origPoly = poly.Duplicate();
 
             int N = poly.VertexCount;
             Vector2d[] newV = new Vector2d[poly.VertexCount];
@@ -271,7 +271,7 @@ namespace g3
 
                 int steps = (int)Math.Ceiling(len / length);
                 for (int k = 1; k < steps; ++k) {
-                    double t = (double)(k) / (double)steps;
+                    double t = k / (double)steps;
                     Vector2d v = (1.0 - t) * poly[j] + (t) * poly[next];
                     result.AppendVertex(v);
                 }

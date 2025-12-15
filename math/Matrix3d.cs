@@ -216,7 +216,7 @@ namespace g3
 
         public double InnerProduct(ref Matrix3d m2)
         {
-            return Row0.Dot(ref m2.Row0) + Row1.Dot(ref m2.Row1) + Row2.Dot(ref m2.Row2);
+            return Row0.Dot(m2.Row0) + Row1.Dot(m2.Row1) + Row2.Dot(m2.Row2);
         }
 
 

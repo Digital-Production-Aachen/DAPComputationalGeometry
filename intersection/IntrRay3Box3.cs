@@ -95,45 +95,45 @@ namespace g3
             Vector3d diff = ray.Origin - box.Center;
             Vector3d extent = box.Extent + expandExtents;
 
-            WdU[0] = ray.Direction.Dot(ref box.AxisX);
+            WdU[0] = ray.Direction.Dot(box.AxisX);
             AWdU[0] = Math.Abs(WdU[0]);
-            DdU[0] = diff.Dot(ref box.AxisX);
+            DdU[0] = diff.Dot(box.AxisX);
             ADdU[0] = Math.Abs(DdU[0]);
-            if (ADdU[0] > extent.x && DdU[0] * WdU[0] >= (double)0) {
+            if (ADdU[0] > extent.x && DdU[0] * WdU[0] >= 0) {
                 return false;
             }
 
-            WdU[1] = ray.Direction.Dot(ref box.AxisY);
+            WdU[1] = ray.Direction.Dot(box.AxisY);
             AWdU[1] = Math.Abs(WdU[1]);
-            DdU[1] = diff.Dot(ref box.AxisY);
+            DdU[1] = diff.Dot(box.AxisY);
             ADdU[1] = Math.Abs(DdU[1]);
-            if (ADdU[1] > extent.y && DdU[1] * WdU[1] >= (double)0) {
+            if (ADdU[1] > extent.y && DdU[1] * WdU[1] >= 0) {
                 return false;
             }
 
-            WdU[2] = ray.Direction.Dot(ref box.AxisZ);
+            WdU[2] = ray.Direction.Dot(box.AxisZ);
             AWdU[2] = Math.Abs(WdU[2]);
-            DdU[2] = diff.Dot(ref box.AxisZ);
+            DdU[2] = diff.Dot(box.AxisZ);
             ADdU[2] = Math.Abs(DdU[2]);
-            if (ADdU[2] > extent.z && DdU[2] * WdU[2] >= (double)0) {
+            if (ADdU[2] > extent.z && DdU[2] * WdU[2] >= 0) {
                 return false;
             }
 
             Vector3d WxD = ray.Direction.Cross(diff);
 
-            AWxDdU[0] = Math.Abs(WxD.Dot(ref box.AxisX));
+            AWxDdU[0] = Math.Abs(WxD.Dot(box.AxisX));
             RHS = extent.y * AWdU[2] + extent.z * AWdU[1];
             if (AWxDdU[0] > RHS) {
                 return false;
             }
 
-            AWxDdU[1] = Math.Abs(WxD.Dot(ref box.AxisY));
+            AWxDdU[1] = Math.Abs(WxD.Dot(box.AxisY));
             RHS = extent.x * AWdU[2] + extent.z * AWdU[0];
             if (AWxDdU[1] > RHS) {
                 return false;
             }
 
-            AWxDdU[2] = Math.Abs(WxD.Dot(ref box.AxisZ));
+            AWxDdU[2] = Math.Abs(WxD.Dot(box.AxisZ));
             RHS = extent.x * AWdU[1] + extent.y * AWdU[0];
             if (AWxDdU[2] > RHS) {
                 return false;

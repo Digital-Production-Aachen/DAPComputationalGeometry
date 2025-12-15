@@ -204,10 +204,10 @@ namespace g3
             Vector3d edge0 = V1 - V0;
             Vector3d edge1 = V2 - V0;
             double a00 = edge0.LengthSquared;
-            double a01 = edge0.Dot(ref edge1);
+            double a01 = edge0.Dot(edge1);
             double a11 = edge1.LengthSquared;
-            double b0 = diff.Dot(ref edge0);
-            double b1 = diff.Dot(ref edge1);
+            double b0 = diff.Dot(edge0);
+            double b1 = diff.Dot(edge1);
             double c = diff.LengthSquared;
             double det = Math.Abs(a00 * a11 - a01 * a01);
             double s = a01 * b1 - a11 * b0;
@@ -492,7 +492,7 @@ namespace g3
                 eid = (eid + nPrime) % MaxID;
             } while (eid != 0 && count++ < max_count);
 
-            avgEdgeLen /= (double)avg_count;
+            avgEdgeLen /= avg_count;
         }
 
 
@@ -516,7 +516,7 @@ namespace g3
                     avg_count++;
                 }
             };
-            avgEdgeLen /= (double)avg_count;
+            avgEdgeLen /= avg_count;
         }
 
 

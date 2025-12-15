@@ -305,7 +305,7 @@ namespace g3
                 Vector3d v = fillMesh.GetVertex(fillLoopV[i]);
                 for ( int j = 0; j < NT; ++j ) {
                     Vector3d v2 = targetMesh.GetVertex(targetLoopV[j]);
-                    if ( v.DistanceSquared(ref v2) < tol_sqr ) {
+                    if ( v.DistanceSquared(v2) < tol_sqr ) {
                         matchF.Insert(i, j);
                     }
                 }

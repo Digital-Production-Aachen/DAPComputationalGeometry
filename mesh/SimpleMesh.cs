@@ -475,35 +475,35 @@ namespace g3
          * copy internal data into buffers. Assumes that buffers are big enough!!
          */
 
-        public unsafe void GetVertexBuffer(double * pBuffer)
+        public void GetVertexBuffer(Span<double> pBuffer)
         {
             DVector<double>.FastGetBuffer(this.Vertices, pBuffer);
         }
 
-        public unsafe void GetVertexNormalBuffer(float * pBuffer)
+        public void GetVertexNormalBuffer(Span<float> pBuffer)
         {
             if ( this.HasVertexNormals )
                 DVector<float>.FastGetBuffer(this.Normals, pBuffer);
         }
 
-        public unsafe void GetVertexColorBuffer(float* pBuffer)
+        public void GetVertexColorBuffer(Span<float> pBuffer)
         {
             if (this.HasVertexColors)
                 DVector<float>.FastGetBuffer(this.Colors, pBuffer);
         }
 
-        public unsafe void GetVertexUVBuffer(float* pBuffer)
+        public void GetVertexUVBuffer(Span<float> pBuffer)
         {
             if (this.HasVertexUVs)
                 DVector<float>.FastGetBuffer(this.UVs, pBuffer);
         }
 
-        public unsafe void GetTriangleBuffer(int* pBuffer)
+        public void GetTriangleBuffer(Span<int> pBuffer)
         {
             DVector<int>.FastGetBuffer(this.Triangles, pBuffer);
         }
 
-        public unsafe void GetFaceGroupsBuffer(int* pBuffer)
+        public void GetFaceGroupsBuffer(Span<int> pBuffer)
         {
             if ( this.HasTriangleGroups)
                 DVector<int>.FastGetBuffer(this.FaceGroups, pBuffer);

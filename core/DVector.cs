@@ -151,7 +151,7 @@ namespace g3
                 return;
 
             // figure out how many segments we need
-            int nNumSegs = 1 + (int)count / nBlockSize;
+            int nNumSegs = 1 + count / nBlockSize;
 
             // figure out how many are currently allocated...
             int nCurCount = Blocks.Count;
@@ -167,7 +167,7 @@ namespace g3
                 Blocks.RemoveRange(nNumSegs, Blocks.Count - nNumSegs);
 
             // allocate new segments
-            for (int i = (int)nCurCount; i < nNumSegs; ++i) {
+            for (int i = nCurCount; i < nNumSegs; ++i) {
                 Blocks.Add(new T[nBlockSize]);
             }
 
@@ -355,38 +355,17 @@ namespace g3
          *   common cases...
          */
 
-        public static unsafe void FastGetBuffer(DVector<double> v, double * pBuffer)
+        public static void FastGetBuffer(DVector<T> v, Span<T> pBuffer)
         {
-            IntPtr pCur = new IntPtr(pBuffer);
             int N = v.Blocks.Count;
-            for (int k = 0; k < N - 1; k++) {
-                System.Runtime.InteropServices.Marshal.Copy(v.Blocks[k], 0, pCur, v.nBlockSize);
-                pCur = new IntPtr(
-                    pCur.ToInt64() + v.nBlockSize * sizeof(double));
+            int current = 0;
+            for (int k = 0; k < N - 1; k++)
+            {
+                Span<T> slice = pBuffer.Slice(current);
+                v.Blocks[k].CopyTo(slice);
+                current += v.nBlockSize;
             }
-            System.Runtime.InteropServices.Marshal.Copy(v.Blocks[N - 1], 0, pCur, v.iCurBlockUsed);
-        }
-        public static unsafe void FastGetBuffer(DVector<float> v, float * pBuffer)
-        {
-            IntPtr pCur = new IntPtr(pBuffer);
-            int N = v.Blocks.Count;
-            for (int k = 0; k < N - 1; k++) {
-                System.Runtime.InteropServices.Marshal.Copy(v.Blocks[k], 0, pCur, v.nBlockSize);
-                pCur = new IntPtr(
-                    pCur.ToInt64() + v.nBlockSize * sizeof(float));
-            }
-            System.Runtime.InteropServices.Marshal.Copy(v.Blocks[N - 1], 0, pCur, v.iCurBlockUsed);
-        }
-        public static unsafe void FastGetBuffer(DVector<int> v, int * pBuffer)
-        {
-            IntPtr pCur = new IntPtr(pBuffer);
-            int N = v.Blocks.Count;
-            for (int k = 0; k < N - 1; k++) {
-                System.Runtime.InteropServices.Marshal.Copy(v.Blocks[k], 0, pCur, v.nBlockSize);
-                pCur = new IntPtr(
-                    pCur.ToInt64() + v.nBlockSize * sizeof(int));
-            }
-            System.Runtime.InteropServices.Marshal.Copy(v.Blocks[N - 1], 0, pCur, v.iCurBlockUsed);
+            v.Blocks[N - 1].AsSpan(v.iCurBlockUsed).CopyTo(pBuffer.Slice(current));
         }
 
 

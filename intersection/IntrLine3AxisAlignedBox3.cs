@@ -156,7 +156,7 @@ namespace g3
 			// plane.  Otherwise 'false' is returned in which case the line segment
 			// is entirely clipped.
 
-			if (denom > (double)0)
+			if (denom > 0)
 			{
                 if (numer - denom*t1 > MathUtil.ZeroTolerance)
 				{
@@ -168,7 +168,7 @@ namespace g3
 				}
 				return true;
 			}
-			else if (denom < (double)0)
+			else if (denom < 0)
 			{
                 if (numer - denom*t0 > MathUtil.ZeroTolerance)
 				{
@@ -182,7 +182,7 @@ namespace g3
 			}
 			else
 			{
-				return numer <= (double)0;
+				return numer <= 0;
 			}
 		}
 

@@ -1,22 +1,31 @@
-# A Short Note about the future of geometry3Sharp
+# DAP Computational Geometry
 
-I have not been able to work on or maintain geometry3Sharp for the past few years, due to some restrictive employment-contract terms. Various forks now exist that have active maintainers, and I would recommend you consider switching to one of those. In particular I would recommend the geometry4Sharp fork being developed by New Wheel Technology (_who also does C# development consulting, if you are looking for that_):
+This computational geometry library is maintained by the chair for [Digital Additive Production (DAP)](https://dap-aachen.de/) of RWTH Aachen university in Germany. It is a fork of the abandoned geometry3Sharp library and adds significant additional algorithms for 2d geometry (Polygons).
 
-https://github.com/NewWheelTech/geometry4Sharp
+## Overview of improvements in this Fork
+- full integration with the **Clipper2** library for **polygon boolean operations** (Union, Difference, XOR, Intersection, Offsets) using a fluent API based on extension methods for IEnumerable<Polygon2d>, directly compatible with all C# collections and LINQ
+- **optimizations of low level algorithms** using modern C# features like Span<Vector2d> and vectorized (SIMD) hardware intrinsics for maximum throughput, e.g. for Polygon translation, rotation and bounds
+- C# reimplementation of **[Approximate convex decomposition of polygons](https://www.sciencedirect.com/science/article/pii/S0925772105001008)** algorithm. The base algorithm has been adapted to make it robust with any input polygon. Uses Clipper2 and defined rounding precision to process even intersecting or self-intersecting inputs.
+- **polygon aggregation** algorithm: combines clusters of polygons or polygon concavities to larger polygons based on a provided aggregation distance parameter. Conceptually the algorithm performs an offset operation and maps back detected intersections to the original.
+- **lossy polygon compression** specialized custom lossy polygon compression and serialization algorithm, optimized for decoding speed. Uses Clipper2 to ensure the compression does not change the topology of the result. Ensures a provided rounding tolerance. Uses scaling, delta encoding and a variant of the Simple16 integer compression codec. The codec table is optimized for typical polygon vertex data. Uses AVX256 intrinsics for decoding speed of ~5GB/s per core, typically compresses to 20% of Polygon2d size (double precision floating point)
+- Point-In-Polygon tests and convex hull that fully support a delta tolerance to compensate floating point rounding errors
+- **ConvexHullBridgeFinder** polygon convex hull bridge detection, decomposition into convex hull pockets
+- **PolygonsEnclosePoint** tests wether a group of overlapping polygons encloses a test point, accelerated for large polygon groups with a quadrant grid and bounds checks
+- **ConvexPolygonOps** Highly optimized algorithms exploiting polygon convexity. Intersection using separating axis (SAT), containment relation of two convex polygons using half-plane checks, convex No-Fit Polygon (NFP), Convex Polygon Union, near linear time concave polygon contains convex check
+- **StraightLinePlanarPath** linear time collision-free path planer for a group of intersection-free polygon obstacles, escape path from convex hull planner
+- **ECCSlicer** slicing algorithm for DMesh3, generates contours as Polygon2d
+- **ShadowGenerator** generates 2d shadows of 3d meshes, supports partitioning meshes in z intervals, optional post processing of shadows using polygon aggregation and polygon unions
+- **HierarchicalSpatialGrid** spatial acceleration structure to perform broad phase bounds checks of AABBs. Uses an indirect spatial grid for compressed storage in bit field vectors per dimension. Bit operations are accelerated using SIMD. Enables stateful dynamic spatial iteration by marking objects as visited in the iterator bit mask. Spatial iteration is implicitly sorted by AABB size due to the hierarchical storage in grid levels. The API enables querying all collision candidates in a AxisAlignedBox3d query volume, iterated by descending size.
+- integration with the [Open Vector Format](https://github.com/Digital-Production-Aachen/OpenVectorFormat)
+- additional extensions for containment and intersection tests between primitives like rectangles, circles
+- different shared data structures (custom collections, graphs, custom concurrent collections)
+- many bug fixes and performance improvements to existing code base
 
 # geometry3Sharp
 
 Open-Source (Boost-license) C# library for geometric computing. 
 
-geometry3Sharp is compatible with Unity. Set the G3_USING_UNITY Scripting Define and you will have transparent interop between g3 and Unity vector types (*see details at the very bottom of this README*). Although the library is written for C# 4.5, if you are using the .NET 3.5 Unity runtime, it will still work, just with a few missing features.
-
-Currently there is a small amount of unsafe code, however this code is only used in a few fast-buffer-copy routines, which can be deleted if you need a safe version (eg for Unity web player).
-
-[A Nuget Package is available](https://www.nuget.org/packages/geometry3Sharp). This package is updated roughly monthly from the github master branch. So, it's "more" stable. Currently this package includes .NET 4.5 and .NET Standard 2.0 dlls. If you would like others, please email and they can be added.
-
-Questions? Contact Ryan Schmidt [@rms80](http://www.twitter.com/rms80) / [gradientspace](http://www.gradientspace.com)
-
-# Projects using g3Sharp
+## Projects using g3Sharp
 
 * [Gradientspace Cotangent](https://www.cotangent.io/) - 3D printing and Mesh Repair/Modeling Tool
 * [Nia Technologies NiaFit](https://niatech.org/technology/niafit/) - 3D-printed prosthetic and orthotic design
@@ -25,7 +34,7 @@ Questions? Contact Ryan Schmidt [@rms80](http://www.twitter.com/rms80) / [gradie
 * [Your Project Here?](rms@gradientspace.com) - *we are very excited to hear about your project!*
 
 
-# Credits
+## Credits
 
 Many, many data structures and algorithms have been ported from the WildMagic5 and GTEngine C++ libraries, which are developed by David Eberly at [Geometric Tools](https://www.geometrictools.com/). WildMagic5 and GTEngine are distributed under the Boost license as well, available [here](https://www.geometrictools.com/Downloads/Downloads.html). Any errors in code marked as ported from WildMagic5/GTEngine are most certainly ours!
 
@@ -33,7 +42,7 @@ The **MeshSignedDistanceGrid** class was implemented based on the C++ [SDFGen](h
 
 
 
-# Tutorials
+## Tutorials
 
 Several tutorials for using g3Sharp have been posted on the Gradientspace blog:
 

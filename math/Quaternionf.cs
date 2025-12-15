@@ -318,7 +318,7 @@ namespace g3
 
             if (trace > 0) {
                 // |w| > 1/2, may as well choose w > 1/2
-                root = (float)Math.Sqrt(trace + (float)1);  // 2w
+                root = (float)Math.Sqrt(trace + 1);  // 2w
                 w = ((float)0.5) * root;
                 root = ((float)0.5) / root;  // 1/(4w)
                 x = (rot[2, 1] - rot[1, 2]) * root;
@@ -336,7 +336,7 @@ namespace g3
                 int j = next[i];
                 int k = next[j];
 
-                root = (float)Math.Sqrt(rot[i, i] - rot[j, j] - rot[k, k] + (float)1);
+                root = (float)Math.Sqrt(rot[i, i] - rot[j, j] - rot[k, k] + 1);
 
                 Vector3f quat = new Vector3f(x, y, z);
                 quat[i] = ((float)0.5) * root;

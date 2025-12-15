@@ -119,7 +119,7 @@ namespace g3
             Vector3d diff = ray.Origin - V0;
             Vector3d edge1 = V1 - V0;
             Vector3d edge2 = V2 - V0;
-            Vector3d normal = edge1.Cross(ref edge2);
+            Vector3d normal = edge1.Cross(edge2);
 
             rayT = double.MaxValue;
 
@@ -128,7 +128,7 @@ namespace g3
             //   |Dot(D,N)|*b1 = sign(Dot(D,N))*Dot(D,Cross(Q,E2))
             //   |Dot(D,N)|*b2 = sign(Dot(D,N))*Dot(D,Cross(E1,Q))
             //   |Dot(D,N)|*t = -sign(Dot(D,N))*Dot(Q,N)
-            double DdN = ray.Direction.Dot(ref normal);
+            double DdN = ray.Direction.Dot(normal);
             double sign;
             if (DdN > MathUtil.ZeroTolerance) {
                 sign = 1;
@@ -141,15 +141,15 @@ namespace g3
                 return false;
             }
 
-            Vector3d cross = diff.Cross(ref edge2);
-            double DdQxE2 = sign * ray.Direction.Dot(ref cross);
+            Vector3d cross = diff.Cross(edge2);
+            double DdQxE2 = sign * ray.Direction.Dot(cross);
             if (DdQxE2 >= 0) {
-                cross = edge1.Cross(ref diff);
-                double DdE1xQ = sign * ray.Direction.Dot(ref cross);
+                cross = edge1.Cross(diff);
+                double DdE1xQ = sign * ray.Direction.Dot(cross);
                 if (DdE1xQ >= 0) {
                     if (DdQxE2 + DdE1xQ <= DdN) {
                         // Line intersects triangle, check if ray does.
-                        double QdN = -sign * diff.Dot(ref normal);
+                        double QdN = -sign * diff.Dot(normal);
                         if (QdN >= 0) {
                             // Ray intersects triangle.
                             double inv = (1) / DdN;

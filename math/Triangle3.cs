@@ -21,13 +21,13 @@ namespace g3
         }
 
         public Vector3d Normal {
-            get { return MathUtil.Normal(ref V0, ref V1, ref V2); }
+            get { return MathUtil.Normal(V0, V1, V2); }
         }
         public double Area {
-            get { return MathUtil.Area(ref V0, ref V1, ref V2); }
+            get { return MathUtil.Area(V0, V1, V2); }
         }
         public double AspectRatio {
-            get { return MathUtil.AspectRatio(ref V0, ref V1, ref V2); }
+            get { return MathUtil.AspectRatio(V0, V1, V2); }
         }
 
         public Vector3d PointAt(double bary0, double bary1, double bary2)

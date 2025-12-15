@@ -5,15 +5,12 @@ using System.Text;
 
 namespace g3
 {
-
-
     public class GeneralPolygon2dBoxTree
     {
         public GeneralPolygon2d Polygon;
 
         Polygon2dBoxTree OuterTree;
         Polygon2dBoxTree[] HoleTrees;
-
 
         public GeneralPolygon2dBoxTree(GeneralPolygon2d poly)
         {
@@ -26,7 +23,6 @@ namespace g3
                     HoleTrees[k] = new Polygon2dBoxTree(poly.Holes[k]);
             }
         }
-
 
         public double DistanceSquared(Vector2d pt, out int iHoleIndex, out int iNearSeg, out double fNearSegT)
         {
@@ -46,32 +42,27 @@ namespace g3
             return min_dist;
         }
 
-
         public double DistanceSquared(Vector2d pt)
         {
             int iHole, iSeg; double segT;
             double distSqr = DistanceSquared(pt, out iHole, out iSeg, out segT);
             return distSqr;
         }
+
         public double Distance(Vector2d pt)
         {
             int iHole, iSeg; double segT;
             double distSqr = DistanceSquared(pt, out iHole, out iSeg, out segT);
             return Math.Sqrt(distSqr);
         }
+
         public Vector2d NearestPoint(Vector2d pt)
         {
             int iHole, iSeg; double segT;
             DistanceSquared(pt, out iHole, out iSeg, out segT);
             return Polygon.PointAt(iSeg, segT, iHole);
         }
-
     }
-
-
-
-
-
 
     /// <summary>
     /// tree of Oriented Boxes (OBB) for a Polygon2d. 
@@ -234,7 +225,5 @@ namespace g3
                     done = true;
             }
         }
-
-
     }
 }

@@ -51,7 +51,7 @@ namespace g3
             Vertices = new List<Vector3d>();
             foreach (Vector2d v in tubePath.Vertices)
                 Vertices.Add(pathPlane.FromPlaneUV((Vector2f)v, nPlaneNormal));
-            Polygon = new Polygon2d(tubeShape);
+            Polygon = tubeShape.Duplicate();
             ClosedLoop = true;
             Capped = false;
         }
@@ -60,14 +60,14 @@ namespace g3
             Vertices = new List<Vector3d>();
             foreach (Vector2d v in tubePath.Vertices)
                 Vertices.Add(pathPlane.FromPlaneUV((Vector2f)v, nPlaneNormal));
-            Polygon = new Polygon2d(tubeShape);
+            Polygon = tubeShape.Duplicate();
             ClosedLoop = false;
             Capped = true;
         }
         public TubeGenerator(DCurve3 tubePath, Polygon2d tubeShape)
         {
             Vertices = new List<Vector3d>(tubePath.Vertices);
-            Polygon = new Polygon2d(tubeShape);
+            Polygon = tubeShape.Duplicate();
             ClosedLoop = tubePath.Closed;
             Capped = ! ClosedLoop;
         }

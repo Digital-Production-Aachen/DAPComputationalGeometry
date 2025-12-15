@@ -16,7 +16,6 @@ namespace g3
             return true;
         }
 
-
         static public bool IsValidFilenameCharacter(char c)
         {
             return Path.GetInvalidPathChars().Contains(c) == false;
@@ -28,7 +27,6 @@ namespace g3
                     return false;
             return true;
         }
-
 
         static public bool IsWebURL(string s)
         {
@@ -50,6 +48,5 @@ namespace g3
             var fileName = Guid.NewGuid().ToString() + extension;
             return Path.Combine(path, fileName);
         }
-
     }
 }

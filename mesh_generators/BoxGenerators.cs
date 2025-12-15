@@ -102,9 +102,9 @@ namespace g3
                     // add vertex rows
                     int start_vi = vi;
                     for (int yi = 0; yi < N; ++yi) {
-                        double ty = (double)yi / (double)(N - 1);
+                        double ty = yi / (double)(N - 1);
                         for (int xi = 0; xi < N; ++xi) {
-                            double tx = (double)xi / (double)(N - 1);
+                            double tx = xi / (double)(N - 1);
                             normals[vi] = faceN;
                             uv[vi] = new Vector2f(tx, ty);
                             vertices[vi++] = bilerp(ref v00, ref v01, ref v11, ref v10, tx, ty);
@@ -155,10 +155,10 @@ namespace g3
 
                     Action<Vector3d, Vector3d, Vector3i, Vector3i> do_edge = (a, b, ai, bi) => {
                         for (int i = 0; i < N; ++i) {
-                            double t = (double)i / (double)(N - 1);
+                            double t = i / (double)(N - 1);
                             Vector3i vidx = lerp(ref ai, ref bi, t);
                             if (edgeVerts.ContainsKey(vidx) == false) {
-                                Vector3d v = Vector3d.Lerp(ref a, ref b, t);
+                                Vector3d v = Vector3d.Lerp(a, b, t);
                                 normals[vi] = (Vector3f)v.Normalized;
                                 uv[vi] = Vector2f.Zero;
                                 edgeVerts[vidx] = vi;
@@ -186,9 +186,9 @@ namespace g3
 
                     // add vertex rows, using existing vertices if we have them in map
                     for (int yi = 0; yi < N; ++yi) {
-                        double ty = (double)yi / (double)(N - 1);
+                        double ty = yi / (double)(N - 1);
                         for (int xi = 0; xi < N; ++xi) {
-                            double tx = (double)xi / (double)(N - 1);
+                            double tx = xi / (double)(N - 1);
                             Vector3i vidx = bilerp(ref vi00, ref vi01, ref vi11, ref vi10, tx, ty);
                             int use_vi;
                             if ( edgeVerts.TryGetValue(vidx, out use_vi) == false ) { 

@@ -137,20 +137,20 @@ namespace g3
             float sum = Math.Abs(m00) + Math.Abs(m11);
             if (Math.Abs(m01) + sum == sum) {
                 // The matrix M is diagonal (within numerical round-off).
-                rot.m00 = (float)1;
-                rot.m01 = (float)0;
-                rot.m10 = (float)0;
-                rot.m11 = (float)1;
+                rot.m00 = 1;
+                rot.m01 = 0;
+                rot.m10 = 0;
+                rot.m11 = 1;
                 diag.m00 = m00;
-                diag.m01 = (float)0;
-                diag.m10 = (float)0;
+                diag.m01 = 0;
+                diag.m10 = 0;
                 diag.m11 = m11;
                 return;
             }
 
             float trace = m00 + m11;
             float diff = m00 - m11;
-            float discr = (float)Math.Sqrt(diff * diff + ((float)4) * m01 * m01);
+            float discr = (float)Math.Sqrt(diff * diff + 4 * m01 * m01);
             float eigVal0 = 0.5f * (trace - discr);
             float eigVal1 = 0.5f * (trace + discr);
             diag.SetToDiagonal(eigVal0, eigVal1);

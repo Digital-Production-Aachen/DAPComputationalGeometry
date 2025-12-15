@@ -190,7 +190,7 @@ namespace g3
             // Compute position.
             double tmp;
             Vector2d X = Vector2d.Zero;
-            double w = (double)0;
+            double w = 0;
             for (i = imin; i <= imax; ++i) {
                 tmp = mBasis.GetD0(i) * mCtrlWeight[i];
                 X += tmp * mCtrlPoint[i];
@@ -213,7 +213,7 @@ namespace g3
             // Compute position.
             double tmp;
             Vector2d X = Vector2d.Zero;
-            double w = (double)0;
+            double w = 0;
             for (i = imin; i <= imax; ++i) {
                 tmp = mBasis.GetD0(i) * mCtrlWeight[i];
                 X += tmp * mCtrlPoint[i];
@@ -224,7 +224,7 @@ namespace g3
 
             // Compute first derivative.
             Vector2d XDer1 = Vector2d.Zero;
-            double wDer1 = (double)0;
+            double wDer1 = 0;
             for (i = imin; i <= imax; ++i) {
                 tmp = mBasis.GetD1(i) * mCtrlWeight[i];
                 XDer1 += tmp * mCtrlPoint[i];
@@ -288,7 +288,7 @@ namespace g3
 
             // Compute position.
             Vector2d X = Vector2d.Zero;
-            double w = (double)0;
+            double w = 0;
             for (i = imin; i <= imax; ++i) {
                 tmp = mBasis.GetD0(i) * mCtrlWeight[i];
                 X += tmp * mCtrlPoint[i];
@@ -304,7 +304,7 @@ namespace g3
 
             // Compute first derivative.
             Vector2d XDer1 = Vector2d.Zero;
-            double wDer1 = (double)0;
+            double wDer1 = 0;
             for (i = imin; i <= imax; ++i) {
                 tmp = mBasis.GetD1(i) * mCtrlWeight[i];
                 XDer1 += tmp * mCtrlPoint[i];
@@ -319,13 +319,13 @@ namespace g3
 
             // Compute second derivative.
             Vector2d XDer2 = Vector2d.Zero;
-            double wDer2 = (double)0;
+            double wDer2 = 0;
             for (i = imin; i <= imax; ++i) {
                 tmp = mBasis.GetD2(i) * mCtrlWeight[i];
                 XDer2 += tmp * mCtrlPoint[i];
                 wDer2 += tmp;
             }
-            Vector2d PDer2 = invW * (XDer2 - ((double)2) * wDer1 * PDer1 - wDer2 * P);
+            Vector2d PDer2 = invW * (XDer2 - 2 * wDer1 * PDer1 - wDer2 * P);
             result.d2 = PDer2;
             result.bDer2 = true;
 
@@ -334,14 +334,14 @@ namespace g3
 
             // Compute third derivative.
             Vector2d XDer3 = Vector2d.Zero;
-            double wDer3 = (double)0;
+            double wDer3 = 0;
             for (i = imin; i <= imax; i++) {
                 tmp = mBasis.GetD3(i) * mCtrlWeight[i];
                 XDer3 += tmp * mCtrlPoint[i];
                 wDer3 += tmp;
             }
-            result.d3 = invW * (XDer3 - ((double)3) * wDer1 * PDer2 -
-                ((double)3) * wDer2 * PDer1 - wDer3 * P);
+            result.d3 = invW * (XDer3 - 3 * wDer1 * PDer2 -
+                3 * wDer2 * PDer1 - wDer3 * P);
         }
 
         // Access the basis function to compute it without control points.  This

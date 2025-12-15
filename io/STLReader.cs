@@ -417,7 +417,7 @@ namespace g3
             if (N > 2000000) num_bins = 2048;
             if (N > 5000000) num_bins = 4096;
 
-            PointHashGrid3d<int> uniqueV = new PointHashGrid3d<int>(bounds.MaxDim / (float)num_bins, -1);
+            PointHashGrid3d<int> uniqueV = new PointHashGrid3d<int>(bounds.MaxDim / num_bins, -1);
             Vector3f[] pos = new Vector3f[N];
             for (int vi = 0; vi < N; ++vi) {
                 Vector3f v = vertices[vi];

@@ -37,7 +37,7 @@ namespace g3
         public TriangleBinsGrid2d(AxisAlignedBox2d bounds, int numCells) 
         {
             this.bounds = bounds;
-            double cellsize = bounds.MaxDim / (double)numCells;
+            double cellsize = bounds.MaxDim / numCells;
             Vector2d origin = bounds.Min - cellsize * 0.5 * Vector2d.One;
             indexer = new ShiftGridIndexer2(origin, cellsize);
 

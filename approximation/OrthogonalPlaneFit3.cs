@@ -25,8 +25,8 @@ namespace g3
             Origin *= invNumPoints;
 
             // Compute the covariance matrix of the points.
-            double sumXX = (double)0, sumXY = (double)0, sumXZ = (double)0;
-            double sumYY = (double)0, sumYZ = (double)0, sumZZ = (double)0;
+            double sumXX = 0, sumXY = 0, sumXZ = 0;
+            double sumYY = 0, sumYZ = 0, sumZZ = 0;
             foreach (Vector3d p in points) { 
                 Vector3d diff = p - Origin;
                 sumXX += diff[0] * diff[0];

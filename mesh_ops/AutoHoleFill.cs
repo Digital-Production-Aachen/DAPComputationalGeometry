@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using g3;
 
-namespace gs
+namespace g3
 {
     /// <summary>
     /// Work in progress. Idea is that this class will analyze the hole and choose correct filling
@@ -133,7 +133,7 @@ namespace gs
                 n += Mesh.GetTriNormal(Mesh.GetEdgeT(eid).a);
                 c += Mesh.GetEdgePoint(eid, 0.5);
             }
-            n.Normalize(); c /= (double)NE;
+            n.Normalize(); c /= NE;
 
             PlanarHoleFiller filler = new PlanarHoleFiller(Mesh);
             filler.FillTargetEdgeLen = TargetEdgeLength;
@@ -306,7 +306,7 @@ namespace gs
             int nc = 0;
             for ( int k = 0; k < NV; ++k ) {
                 int prev = (k==0) ? NV-1 : k-1;
-                if (edge_normals[k].Dot(ref edge_normals[prev]) > dot_thresh) {
+                if (edge_normals[k].Dot(edge_normals[prev]) > dot_thresh) {
                     vert_coplanar[k] = true;
                     nc++;
                 }
@@ -339,7 +339,7 @@ namespace gs
                     EdgeSpan span = EdgeSpan.FromEdges(mesh, edges);
                     span.CheckValidity();
                     foreach ( var pair in span_sets ) {
-                        if ( pair.Key.Dot(ref span_n) > dot_thresh ) {
+                        if ( pair.Key.Dot(span_n) > dot_thresh ) {
                             span_n = pair.Key;
                             break;
                         }

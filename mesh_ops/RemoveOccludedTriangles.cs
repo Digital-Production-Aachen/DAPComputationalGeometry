@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using g3;
 
-namespace gs
+namespace g3
 {
 	/// <summary>
 	/// Remove "occluded" triangles, ie triangles on the "inside" of the mesh. 

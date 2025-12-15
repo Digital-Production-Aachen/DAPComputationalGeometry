@@ -391,7 +391,7 @@ namespace g3
                     double v1 = mVVector[ip1];
                     double sgn = (v1 >= 0 ? 1 : -1);
                     double invDenom = 1 / (v1 + sgn * length);
-                    mVVector[ip1] = (double)1;
+                    mVVector[ip1] = 1;
                     for (r = ip1 + 1; r < mSize; ++r) {
                         mVVector[r] *= invDenom;
                         vdv += mVVector[r] * mVVector[r];

@@ -41,12 +41,12 @@ namespace g3
             if (Subdivisions > 0)
                 nSteps = Subdivisions;
             else if (StepSize > 0)
-                nSteps = (int)MathUtil.Clamp( (int)(fLen / StepSize), 2, 10000);
+                nSteps = MathUtil.Clamp((int)(fLen / StepSize), 2, 10000);
 
             vertices = new VectorArray3d(nSteps+1);
 
             for ( int i = 0; i < nSteps; ++i ) {
-                double t = (double)i / (double)nSteps;
+                double t = i / (double)nSteps;
                 Vector3d v = (1.0 - t) * Start + (t) * End;
                 vertices[i] = (v);
             }

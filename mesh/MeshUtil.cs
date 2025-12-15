@@ -150,13 +150,13 @@ namespace g3 {
             int oa = a, ob = b;
             IndexUtil.orient_tri_edge(ref oa, ref ob, ref tri_v);
             Vector3d vOA = mesh.GetVertex(oa), vOB = mesh.GetVertex(ob);
-            Vector3d n0 = MathUtil.FastNormalDirection(ref vOA, ref vOB, ref vC);
-            Vector3d n1 = MathUtil.FastNormalDirection(ref vOB, ref vOA, ref vD);
-            Vector3d f0 = MathUtil.FastNormalDirection(ref vC, ref vD, ref vOB);
+            Vector3d n0 = MathUtil.FastNormalDirection(vOA, vOB, vC);
+            Vector3d n1 = MathUtil.FastNormalDirection(vOB, vOA, vD);
+            Vector3d f0 = MathUtil.FastNormalDirection(vC, vD, vOB);
             if (edge_flip_metric(ref n0, ref f0, flip_dot_tol) <= flip_dot_tol 
                 || edge_flip_metric(ref n1, ref f0, flip_dot_tol) <= flip_dot_tol)
                 return true;
-            Vector3d f1 = MathUtil.FastNormalDirection(ref vD, ref vC, ref vOA);
+            Vector3d f1 = MathUtil.FastNormalDirection(vD, vC, vOA);
             if (edge_flip_metric(ref n0, ref f1, flip_dot_tol) <= flip_dot_tol 
                 || edge_flip_metric(ref n1, ref f1, flip_dot_tol) <= flip_dot_tol)
                 return true;
@@ -207,10 +207,10 @@ namespace g3 {
             int oa = a, ob = b;
             IndexUtil.orient_tri_edge(ref oa, ref ob, ref tri_v);
             Vector3d vOA = mesh.GetVertex(oa), vOB = mesh.GetVertex(ob);
-            n1 = MathUtil.Normal(ref vOA, ref vOB, ref vC);
-            n2 = MathUtil.Normal(ref vOB, ref vOA, ref vD);
-            on1 = MathUtil.Normal(ref vC, ref vD, ref vOB);
-            on2 = MathUtil.Normal(ref vD, ref vC, ref vOA);
+            n1 = MathUtil.Normal(vOA, vOB, vC);
+            n2 = MathUtil.Normal(vOB, vOA, vD);
+            on1 = MathUtil.Normal(vC, vD, vOB);
+            on2 = MathUtil.Normal(vD, vC, vOA);
         }
 
 

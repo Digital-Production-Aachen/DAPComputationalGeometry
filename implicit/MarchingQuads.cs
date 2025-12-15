@@ -212,10 +212,10 @@ namespace g3
 
 			float fRefValue1 = fValue1;
 			float fRefValue2 = fValue2;
-			float fX1 = (float)x1 * m_fCellSize + m_fXShift;
-			float fY1 = (float)y1 * m_fCellSize + m_fYShift;
-			float fX2 = (float)x2 * m_fCellSize + m_fXShift;
-			float fY2 = (float)y2 * m_fCellSize + m_fYShift;
+			float fX1 = x1 * m_fCellSize + m_fXShift;
+			float fY1 = y1 * m_fCellSize + m_fYShift;
+			float fX2 = x2 * m_fCellSize + m_fXShift;
+			float fY2 = y2 * m_fCellSize + m_fYShift;
 
             for (int i = 0; i < 10; ++i)
                 SubdivideStep(ref fRefValue1, ref fRefValue2, ref fX1, ref fY1, ref fX2, ref fY2, bVerticalEdge);
@@ -278,7 +278,7 @@ namespace g3
 				int nxi = xi + (i & 1);
 				int nyi = yi + ((i >> 1) & 1);
 				if (m_cells[nyi][nxi].fValue == s_fValueSentinel)
-					m_cells[nyi][nxi].fValue = m_field.Value( (float)nxi * m_fCellSize + m_fXShift, (float)nyi*m_fCellSize + m_fYShift );
+					m_cells[nyi][nxi].fValue = m_field.Value(nxi * m_fCellSize + m_fXShift, nyi * m_fCellSize + m_fYShift );
 				m_bEdgeSigns[i] = (m_cells[nyi][nxi].fValue > m_fIsoValue);
 				nCase |= (m_bEdgeSigns[i] == true ? 1 : 0)  << i;
 
@@ -302,8 +302,8 @@ namespace g3
 			// evaluate "middle" decider case...
 			float fDecider = 0.0f;
 			if (nCase == 6 || nCase == 9)
-				fDecider = m_field.Value( (float)xi * m_fCellSize + m_fCellSize/2.0f + m_fXShift, 
-					(float)yi*m_fCellSize + m_fCellSize/2.0f + m_fYShift );
+				fDecider = m_field.Value(xi * m_fCellSize + m_fCellSize/2.0f + m_fXShift,
+                    yi * m_fCellSize + m_fCellSize/2.0f + m_fYShift );
 
 			int nSidesToPush = 0;
 

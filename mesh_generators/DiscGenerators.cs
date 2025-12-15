@@ -31,7 +31,7 @@ namespace g3
             float fStartRad = StartAngleDeg * MathUtil.Deg2Radf;
             float fDelta = (bFullDisc) ? fTotalRange / Slices : fTotalRange / (Slices - 1);
             for (int k = 0; k < Slices; ++k) {
-                float a = fStartRad + (float)k * fDelta;
+                float a = fStartRad + k * fDelta;
                 double cosa = Math.Cos(a), sina = Math.Sin(a);
                 vertices[vi] = new Vector3d(Radius * cosa, 0, Radius * sina);
                 uv[vi] = new Vector2f(0.5f * (1.0f + cosa), 0.5f * (1 + sina));
@@ -77,7 +77,7 @@ namespace g3
             float fDelta = (bFullDisc) ? fTotalRange / Slices : fTotalRange / (Slices - 1);
             float fUVRatio = InnerRadius / OuterRadius;
             for (int k = 0; k < Slices; ++k) {
-                float angle = fStartRad + (float)k * fDelta;
+                float angle = fStartRad + k * fDelta;
                 double cosa = Math.Cos(angle), sina = Math.Sin(angle);
                 vertices[k] = new Vector3d(InnerRadius * cosa, 0, InnerRadius * sina);
                 vertices[Slices+k] = new Vector3d(OuterRadius * cosa, 0, OuterRadius * sina);

@@ -96,20 +96,20 @@ namespace g3
 
         public List<IParametricCurve2d> Curves {
             get {
-				IParametricCurve2d c1 = (Arc1IsSegment) ? (IParametricCurve2d)Segment1 : (IParametricCurve2d)Arc1;
-				IParametricCurve2d c2 = (Arc2IsSegment) ? (IParametricCurve2d)Segment2 : (IParametricCurve2d)Arc2;
+				IParametricCurve2d c1 = (Arc1IsSegment) ? Segment1 : Arc1;
+				IParametricCurve2d c2 = (Arc2IsSegment) ? Segment2 : Arc2;
 				return new List<IParametricCurve2d>() { c1, c2 };
             }
         }
 
         public IParametricCurve2d Curve1 {
             get {
-                return (Arc1IsSegment) ? (IParametricCurve2d)Segment1 : (IParametricCurve2d)Arc1;
+                return (Arc1IsSegment) ? Segment1 : Arc1;
             }
         }
         public IParametricCurve2d Curve2 {
             get {
-                return (Arc2IsSegment) ? (IParametricCurve2d)Segment2 : (IParametricCurve2d)Arc2;
+                return (Arc2IsSegment) ? Segment2 : Arc2;
             }
         }
 

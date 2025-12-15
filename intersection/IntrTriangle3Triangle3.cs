@@ -251,10 +251,10 @@ namespace g3
             E0.V2 = triangle0.V0 - triangle0.V2;
 
             // Get normal vector of triangle0.
-            Vector3d N0 = E0.V0.UnitCross(ref E0.V1);
+            Vector3d N0 = E0.V0.UnitCross(E0.V1);
 
             // Project triangle1 onto normal line of triangle0, test for separation.
-            double N0dT0V0 = N0.Dot(ref triangle0.V0);
+            double N0dT0V0 = N0.Dot(triangle0.V0);
             double min1, max1;
             ProjectOntoAxis(ref triangle1, ref N0, out min1, out max1);
             if (N0dT0V0 < min1 || N0dT0V0 > max1) {
@@ -268,19 +268,19 @@ namespace g3
             E1.V2 = triangle1.V0 - triangle1.V2;
 
             // Get normal vector of triangle1.
-            Vector3d N1 = E1.V0.UnitCross(ref E1.V1);
+            Vector3d N1 = E1.V0.UnitCross(E1.V1);
 
             Vector3d dir;
             double min0, max0;
             int i0, i1;
 
-            Vector3d N0xN1 = N0.UnitCross(ref N1);
-            if (N0xN1.Dot(ref N0xN1) >= MathUtil.ZeroTolerance) {
+            Vector3d N0xN1 = N0.UnitCross(N1);
+            if (N0xN1.Dot(N0xN1) >= MathUtil.ZeroTolerance) {
                 // Triangles are not parallel.
 
                 // Project triangle0 onto normal line of triangle1, test for
                 // separation.
-                double N1dT1V0 = N1.Dot(ref triangle1.V0);
+                double N1dT1V0 = N1.Dot(triangle1.V0);
                 ProjectOntoAxis(ref triangle0, ref N1, out min0, out max0);
                 if (N1dT1V0 < min0 || N1dT1V0 > max0) {
                     return false;
@@ -384,7 +384,7 @@ namespace g3
                     sign[i] = -1;
                     negative++;
                 } else {
-                    distance[i] = (double)0;
+                    distance[i] = 0;
                     sign[i] = 0;
                     zero++;
                 }
@@ -516,7 +516,7 @@ namespace g3
 
             // Unproject the segment of intersection.
             if (maxNormal == 0) {
-                double invNX = ((double)1)/plane.Normal.x;
+                double invNX = 1 / plane.Normal.x;
                 for (i = 0; i < Quantity; ++i) {
                     double y = intr[i].x;
                     double z = intr[i].y;
@@ -524,7 +524,7 @@ namespace g3
                     Points[i] = new Vector3d(x, y, z);
                 }
             } else if (maxNormal == 1) {
-                double invNY = ((double)1)/plane.Normal.y;
+                double invNY = 1 / plane.Normal.y;
                 for (i = 0; i < Quantity; ++i) {
                     double x = intr[i].x;
                     double z = intr[i].y;
@@ -532,7 +532,7 @@ namespace g3
                     Points[i] = new Vector3d(x, y, z);
                 }
             } else {
-                double invNZ = ((double)1)/plane.Normal.z;
+                double invNZ = 1 / plane.Normal.z;
                 for (i = 0; i < Quantity; ++i) {
                     double x = intr[i].x;
                     double y = intr[i].y;
@@ -590,7 +590,7 @@ namespace g3
             Vector2d save;
             Vector2d edge0 = projTri0[1] - projTri0[0];
             Vector2d edge1 = projTri0[2] - projTri0[0];
-            if (edge0.DotPerp(edge1) < (double)0) {
+            if (edge0.DotPerp(edge1) < 0) {
                 // Triangle is clockwise, reorder it.
                 save = projTri0[1];
                 projTri0[1] = projTri0[2];
@@ -599,7 +599,7 @@ namespace g3
 
             edge0 = projTri1[1] - projTri1[0];
             edge1 = projTri1[2] - projTri1[0];
-            if (edge0.DotPerp(edge1) < (double)0) {
+            if (edge0.DotPerp(edge1) < 0) {
                 // Triangle is clockwise, reorder it.
                 save = projTri1[1];
                 projTri1[1] = projTri1[2];
@@ -616,7 +616,7 @@ namespace g3
             // Map 2D intersections back to the 3D triangle space.
             Quantity = intr.Quantity;
             if (maxNormal == 0) {
-                double invNX = ((double)1)/plane.Normal.x;
+                double invNX = 1 / plane.Normal.x;
                 for (i = 0; i < Quantity; i++) {
                     double y = intr.Points[i].x;
                     double z = intr.Points[i].y;
@@ -624,7 +624,7 @@ namespace g3
                     PolygonPoints[i] = new Vector3d(x, y, z);
                 }
             } else if (maxNormal == 1) {
-                double invNY = ((double)1)/plane.Normal.y;
+                double invNY = 1 / plane.Normal.y;
                 for (i = 0; i < Quantity; i++) {
                     double x = intr.Points[i].x;
                     double z = intr.Points[i].y;
@@ -632,7 +632,7 @@ namespace g3
                     PolygonPoints[i] = new Vector3d(x, y, z);
                 }
             } else{
-                double invNZ = ((double)1)/plane.Normal.z;
+                double invNZ = 1 / plane.Normal.z;
                 for (i = 0; i < Quantity; i++) {
                     double x = intr.Points[i].x;
                     double y = intr.Points[i].y;

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using g3;
 
-namespace gs
+namespace g3
 {
 	public class PointSetHashtable
 	{
@@ -23,7 +23,7 @@ namespace gs
 
 		public void Build(int maxAxisSubdivs = 64) {
 			AxisAlignedBox3d bounds = BoundsUtil.Bounds(Points);
-			double cellsize = bounds.MaxDim / (double)maxAxisSubdivs;
+			double cellsize = bounds.MaxDim / maxAxisSubdivs;
 			Build(cellsize, bounds.Min);
 		}
 

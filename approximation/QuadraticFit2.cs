@@ -73,7 +73,7 @@ namespace g3
 				A[4, 5] += xy3;
 			}
 
-			A[0, 0] = (double)numPoints;
+			A[0, 0] = numPoints;
 			A[1, 1] = A[0, 3];
 			A[1, 2] = A[0, 5];
 			A[2, 2] = A[0, 4];
@@ -87,7 +87,7 @@ namespace g3
 				}
 			}
 
-			double invNumPoints = 1.0 / (double)numPoints;
+			double invNumPoints = 1.0 / numPoints;
 			for (int row = 0; row < 6; ++row) {
 				for (int col = 0; col < 6; ++col) {
 					A[row, col] *= invNumPoints;
@@ -137,7 +137,7 @@ namespace g3
 				A[3, 3] += r4;
 			}
 
-			A[0, 0] = (double)numPoints;
+			A[0, 0] = numPoints;
 
 			for (int row = 0; row < 4; ++row) {
 				for (int col = 0; col < row; ++col) {
@@ -145,7 +145,7 @@ namespace g3
 				}
 			}
 
-			double invNumPoints = 1.0 / (double)numPoints;
+			double invNumPoints = 1.0 / numPoints;
 			for (int row = 0; row < 4; ++row) {
 				for (int col = 0; col < 4; ++col) {
 					A[row, col] *= invNumPoints;

@@ -18,10 +18,10 @@ namespace g3
         public Colorf(float greylevel, float a = 1) { r = g = b = greylevel; this.a = a; }
         public Colorf(float r, float g, float b, float a = 1) { this.r = r; this.g = g; this.b = b; this.a = a; }
         public Colorf(int r, int g, int b, int a = 255) {
-            this.r = MathUtil.Clamp((float)r, 0.0f, 255.0f) / 255.0f;
-            this.g = MathUtil.Clamp((float)g, 0.0f, 255.0f) / 255.0f;
-            this.b = MathUtil.Clamp((float)b, 0.0f, 255.0f) / 255.0f;
-            this.a = MathUtil.Clamp((float)a, 0.0f, 255.0f) / 255.0f;
+            this.r = MathUtil.Clamp(r, 0.0f, 255.0f) / 255.0f;
+            this.g = MathUtil.Clamp(g, 0.0f, 255.0f) / 255.0f;
+            this.b = MathUtil.Clamp(b, 0.0f, 255.0f) / 255.0f;
+            this.a = MathUtil.Clamp(a, 0.0f, 255.0f) / 255.0f;
         }
         public Colorf(float[] v2) { r = v2[0]; g = v2[1]; b = v2[2]; a = v2[3]; }
         public Colorf(Colorf copy) { r = copy.r; g = copy.g; b = copy.b; a = copy.a; }

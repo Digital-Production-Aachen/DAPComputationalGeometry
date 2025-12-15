@@ -75,23 +75,23 @@ namespace g3
                 b1 = -kDiff.Dot(ray.Direction);
                 s1 = a01 * b0 - b1;
 
-                if (s1 >= (double)0) {
+                if (s1 >= 0) {
                     // Two interior points are closest, one on line and one on ray.
-                    double invDet = ((double)1) / det;
+                    double invDet = 1 / det;
                     s0 = (a01 * b1 - b0) * invDet;
                     s1 *= invDet;
-                    sqrDist = s0 * (s0 + a01 * s1 + ((double)2) * b0) +
-                        s1 * (a01 * s0 + s1 + ((double)2) * b1) + c;
+                    sqrDist = s0 * (s0 + a01 * s1 + 2 * b0) +
+                        s1 * (a01 * s0 + s1 + 2 * b1) + c;
                 } else {
                     // Origin of ray and interior point of line are closest.
                     s0 = -b0;
-                    s1 = (double)0;
+                    s1 = 0;
                     sqrDist = b0 * s0 + c;
                 }
             } else {
                 // Lines are parallel, closest pair with one point at ray origin.
                 s0 = -b0;
-                s1 = (double)0;
+                s1 = 0;
                 sqrDist = b0 * s0 + c;
             }
 
@@ -101,8 +101,8 @@ namespace g3
             RayParameter = s1;
 
             // Account for numerical round-off errors.
-            if (sqrDist < (double)0) {
-                sqrDist = (double)0;
+            if (sqrDist < 0) {
+                sqrDist = 0;
             }
             DistanceSquared = sqrDist;
 

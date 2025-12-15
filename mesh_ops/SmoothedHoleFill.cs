@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using g3;
 
-namespace gs
+namespace g3
 {
     /// <summary>
     /// This fills a hole in a mesh by doing a trivial fill, optionally offsetting along a fixed vector,

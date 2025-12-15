@@ -38,7 +38,7 @@ namespace g3
                     p += area * triCache.Centroids[tid];
                 } else {
                     mesh.GetTriVertices(tid, ref P0, ref P1, ref P2);
-                    double area = MathUtil.Area(ref P0, ref P1, ref P2);
+                    double area = MathUtil.Area(P0, P1, P2);
                     sum_area += area;
                     p += area * ((P0 + P1 + P2) / 3.0);
                 }
@@ -53,7 +53,7 @@ namespace g3
 
                 if (triCache == null) {
                     c = (1.0 / 3.0) * (P0 + P1 + P2);
-                    n = MathUtil.FastNormalArea(ref P0, ref P1, ref P2, out a);
+                    n = MathUtil.FastNormalArea(P0, P1, P2, out a);
                 } else {
                     triCache.GetTriInfo(tid, ref n, ref a, ref c);
                 }
@@ -64,7 +64,7 @@ namespace g3
                 order2 += a * new Matrix3d(ref dcp, ref n);
 
                 // this is just for return value...
-                double maxdist = MathUtil.Max(P0.DistanceSquared(ref p), P1.DistanceSquared(ref p), P2.DistanceSquared(ref p));
+                double maxdist = MathUtil.Max(P0.DistanceSquared(p), P1.DistanceSquared(p), P2.DistanceSquared(p));
                 r = Math.Max(r, Math.Sqrt(maxdist));
             }
         }
@@ -92,7 +92,7 @@ namespace g3
             double len3 = len * len * len;
             double fourPi_len3 = 1.0 / (MathUtil.FourPI * len3);
 
-            double order1 = fourPi_len3 * order1Coeff.Dot(ref dpq);
+            double order1 = fourPi_len3 * order1Coeff.Dot(dpq);
 
             // second-order hessian \grad^2(G)
             double c = - 3.0 / (MathUtil.FourPI * len3 * len * len);
@@ -236,7 +236,7 @@ namespace g3
             double len3 = len * len * len;
             double fourPi_len3 = 1.0 / (MathUtil.FourPI * len3);
 
-            double order1 = fourPi_len3 * order1Coeff.Dot(ref dpq);
+            double order1 = fourPi_len3 * order1Coeff.Dot(dpq);
 
             // second-order hessian \grad^2(G)
             double c = -3.0 / (MathUtil.FourPI * len3 * len * len);

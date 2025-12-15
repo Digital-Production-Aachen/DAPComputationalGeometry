@@ -154,7 +154,7 @@ namespace g3
             double det = A.m00 * A.m11 - A.m01 * A.m10;
 
             if (Math.Abs(det) > mEpsilon) {
-                double invDet = ((double)1) / det;
+                double invDet = 1 / det;
                 Vector2d Q;
                 Q.x = (A.m11 * B.x - A.m01 * B.y) * invDet;
                 Q.y = (A.m00 * B.y - A.m10 * B.x) * invDet;

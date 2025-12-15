@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using g3;
 
-namespace gs
+namespace g3
 {
     /// <summary>
     /// Extension to Remesher that is smarter about which edges/vertices to touch:
@@ -115,7 +115,7 @@ namespace gs
                     int nSplits = FastSplitIteration();
                     if (fastsplit_i++ > max_fastsplits)
                         bContinue = false;
-                    if ((double)nSplits / (double)mesh.EdgeCount < 0.01)
+                    if (nSplits / (double)mesh.EdgeCount < 0.01)
                         bContinue = false;
                     if (Cancelled())
                         return;
@@ -175,7 +175,7 @@ namespace gs
                     int nSplits = FastSplitIteration();
                     if (fastsplit_i++ > max_fastsplits)
                         bContinue = false;
-                    if ((double)nSplits / (double)mesh.EdgeCount < 0.01)
+                    if (nSplits / (double)mesh.EdgeCount < 0.01)
                         bContinue = false;
                     if (Cancelled())
                         return;
@@ -289,7 +289,7 @@ namespace gs
                 foreach (int eid in Mesh.VtxEdgesItr(vNew)) {
                     Index2i ev = Mesh.GetEdgeV(eid);
                     int othervid = (ev.a == vNew) ? ev.b : ev.a;
-                    if (mesh.GetVertex(othervid).DistanceSquared(ref v) > max_edge_len_sqr)
+                    if (mesh.GetVertex(othervid).DistanceSquared(v) > max_edge_len_sqr)
                         queue_edge(eid);
                 }
                 //queue_one_ring(vNew);

@@ -84,7 +84,7 @@ namespace g3
         public MarchingCubes()
         {
             // initialize w/ a basic sphere example
-            Implicit = new ImplicitSphere3d();
+            Implicit = new ImplicitSphere3d(Vector3d.Zero, 1);
             Bounds = new AxisAlignedBox3d(Vector3d.Zero, 8);
             CubeSize = 0.25;
         }

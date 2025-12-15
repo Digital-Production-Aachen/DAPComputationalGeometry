@@ -25,7 +25,8 @@ namespace g3
         static public readonly Vector3d AxisX = new Vector3d(1.0f, 0.0f, 0.0f);
         static public readonly Vector3d AxisY = new Vector3d(0.0f, 1.0f, 0.0f);
         static public readonly Vector3d AxisZ = new Vector3d(0.0f, 0.0f, 1.0f);
-		static public readonly Vector3d MaxValue = new Vector3d(double.MaxValue,double.MaxValue,double.MaxValue);
+        static public readonly Vector3d Invalid = new Vector3d(double.MaxValue, double.MaxValue, double.MaxValue);
+        static public readonly Vector3d MaxValue = new Vector3d(double.MaxValue,double.MaxValue,double.MaxValue);
 		static public readonly Vector3d MinValue = new Vector3d(double.MinValue,double.MinValue,double.MinValue);
 
         public double this[int key]
@@ -119,35 +120,25 @@ namespace g3
             z = Math.Round(z, nDecimals);
         }
 
-
-        public double Dot(Vector3d v2) {
-            return x * v2.x + y * v2.y + z * v2.z;
-        }
-        public double Dot(ref Vector3d v2) {
+        public double Dot(in Vector3d v2) {
             return x * v2.x + y * v2.y + z * v2.z;
         }
 
         public static double Dot(Vector3d v1, Vector3d v2) {
-            return v1.Dot(ref v2);
+            return v1.Dot(v2);
         }
 
-        public Vector3d Cross(Vector3d v2) {
-            return new Vector3d(
-                y * v2.z - z * v2.y,
-                z * v2.x - x * v2.z,
-                x * v2.y - y * v2.x);
-        }
-        public Vector3d Cross(ref Vector3d v2) {
+        public Vector3d Cross(in Vector3d v2) {
             return new Vector3d(
                 y * v2.z - z * v2.y,
                 z * v2.x - x * v2.z,
                 x * v2.y - y * v2.x);
         }
         public static Vector3d Cross(Vector3d v1, Vector3d v2) {
-            return v1.Cross(ref v2);
+            return v1.Cross(v2);
         }
 
-        public Vector3d UnitCross(ref Vector3d v2) {
+        public Vector3d UnitCross(in Vector3d v2) {
             Vector3d n = new Vector3d(
                 y * v2.z - z * v2.y,
                 z * v2.x - x * v2.z,
@@ -155,10 +146,6 @@ namespace g3
             n.Normalize();
             return n;
         }
-        public Vector3d UnitCross(Vector3d v2) {
-            return UnitCross(ref v2);
-        }
-
 
         public double AngleD(Vector3d v2)
         {
@@ -179,20 +166,12 @@ namespace g3
             return v1.AngleR(v2);
         }
 
-		public double DistanceSquared(Vector3d v2) {
-			double dx = v2.x-x, dy = v2.y-y, dz = v2.z-z;
-			return dx*dx + dy*dy + dz*dz;
-		}
-		public double DistanceSquared(ref Vector3d v2) {
+		public double DistanceSquared(in Vector3d v2) {
 			double dx = v2.x-x, dy = v2.y-y, dz = v2.z-z;
 			return dx*dx + dy*dy + dz*dz;
 		}
 
-        public double Distance(Vector3d v2) {
-            double dx = v2.x-x, dy = v2.y-y, dz = v2.z-z;
-			return Math.Sqrt(dx*dx + dy*dy + dz*dz);
-		}
-        public double Distance(ref Vector3d v2) {
+        public double Distance(in Vector3d v2) {
             double dx = v2.x-x, dy = v2.y-y, dz = v2.z-z;
 			return Math.Sqrt(dx*dx + dy*dy + dz*dz);
 		}
@@ -314,17 +293,10 @@ namespace g3
                    Math.Abs(z - v2.z) <= epsilon;
         }
 
-
-        public static Vector3d Lerp(Vector3d a, Vector3d b, double t) {
+        public static Vector3d Lerp(in Vector3d a, in Vector3d b, double t) {
             double s = 1 - t;
             return new Vector3d(s * a.x + t * b.x, s * a.y + t * b.y, s * a.z + t * b.z);
         }
-        public static Vector3d Lerp(ref Vector3d a, ref Vector3d b, double t) {
-            double s = 1 - t;
-            return new Vector3d(s * a.x + t * b.x, s * a.y + t * b.y, s * a.z + t * b.z);
-        }
-
-
 
         public override string ToString() {
             return string.Format("{0:F8} {1:F8} {2:F8}", x, y, z);
@@ -470,7 +442,7 @@ namespace g3
         /// Returns two vectors perpendicular to n, as efficiently as possible.
         /// Duff et all method, from https://graphics.pixar.com/library/OrthonormalB/paper.pdf
         /// </summary>
-        public static void MakePerpVectors(ref Vector3d n, out Vector3d b1, out Vector3d b2)
+        public static void MakePerpVectors(in Vector3d n, out Vector3d b1, out Vector3d b2)
         {
             if (n.z < 0.0) {
                 double a = 1.0 / (1.0 - n.z);

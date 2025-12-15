@@ -91,9 +91,9 @@ namespace g3
 
         public Vector3d FromGrid(Vector3i gridpoint) {
 			return new Vector3d(
-				((double)gridpoint.x * CellSize),
-				((double)gridpoint.y * CellSize),
-				((double)gridpoint.z * CellSize));
+				(gridpoint.x * CellSize),
+				(gridpoint.y * CellSize),
+				(gridpoint.z * CellSize));
 		}
 
 		public Vector3d FromGrid(Vector3d gridpointf) {
@@ -135,9 +135,9 @@ namespace g3
 
         public Vector3d FromGrid(Vector3i gridpoint) {
 			return new Vector3d(
-				((double)gridpoint.x * CellSize) + Origin.x,
-				((double)gridpoint.y * CellSize) + Origin.y,
-				((double)gridpoint.z * CellSize) + Origin.z);
+				(gridpoint.x * CellSize) + Origin.x,
+				(gridpoint.y * CellSize) + Origin.y,
+				(gridpoint.z * CellSize) + Origin.z);
 		}
 
 		public Vector3d FromGrid(Vector3d gridpointf) {
@@ -186,7 +186,7 @@ namespace g3
         public Vector3d FromGrid(Vector3d gridpointf)
         {
             gridpointf *= CellSize;
-            return (Vector3d)GridFrame.FromFrameP(ref gridpointf);
+            return GridFrame.FromFrameP(ref gridpointf);
         }
     }
 
@@ -212,9 +212,9 @@ namespace g3
         public Vector3i ToBlockIndex(Vector3i outer_index)
         {
             Vector3i block_index = outer_index - OuterShift;
-            block_index.x = (block_index.x >= 0) ? (int)(block_index.x / BlockSize.x) : ((int)(block_index.x / BlockSize.x) - 1);
-            block_index.y = (block_index.y >= 0) ? (int)(block_index.y / BlockSize.y) : ((int)(block_index.y / BlockSize.y) - 1);
-            block_index.z = (block_index.z >= 0) ? (int)(block_index.z / BlockSize.z) : ((int)(block_index.z / BlockSize.z) - 1);
+            block_index.x = (block_index.x >= 0) ? block_index.x / BlockSize.x : (block_index.x / BlockSize.x - 1);
+            block_index.y = (block_index.y >= 0) ? block_index.y / BlockSize.y : (block_index.y / BlockSize.y - 1);
+            block_index.z = (block_index.z >= 0) ? block_index.z / BlockSize.z : (block_index.z / BlockSize.z - 1);
             return block_index - BlockShift;
         }
 
@@ -227,9 +227,9 @@ namespace g3
         public GridLevelIndex ToBlock(Vector3i outer_index)
         {
             Vector3i block_index = outer_index - OuterShift;
-            block_index.x = (block_index.x >= 0) ? (int)(block_index.x / BlockSize.x) : ((int)(block_index.x / BlockSize.x) - 1);
-            block_index.y = (block_index.y >= 0) ? (int)(block_index.y / BlockSize.y) : ((int)(block_index.y / BlockSize.y) - 1);
-            block_index.z = (block_index.z >= 0) ? (int)(block_index.z / BlockSize.z) : ((int)(block_index.z / BlockSize.z) - 1);
+            block_index.x = (block_index.x >= 0) ? block_index.x / BlockSize.x : (block_index.x / BlockSize.x - 1);
+            block_index.y = (block_index.y >= 0) ? block_index.y / BlockSize.y : (block_index.y / BlockSize.y - 1);
+            block_index.z = (block_index.z >= 0) ? block_index.z / BlockSize.z : (block_index.z / BlockSize.z - 1);
             block_index -= BlockShift;
             return new GridLevelIndex() {
                 block_index = block_index,

@@ -64,7 +64,7 @@ namespace g3
             double a01 = -line.Direction.Dot(segment.Direction);
             double b0 = diff.Dot(line.Direction);
             double c = diff.LengthSquared;
-            double det = Math.Abs((double)1 - a01 * a01);
+            double det = Math.Abs(1 - a01 * a01);
             double b1, s0, s1, sqrDist, extDet;
 
             if (det >= MathUtil.ZeroTolerance) {
@@ -77,28 +77,28 @@ namespace g3
                     if (s1 <= extDet) {
                         // Two interior points are closest, one on the line and one
                         // on the segment.
-                        double invDet = ((double)1) / det;
+                        double invDet = 1 / det;
                         s0 = (a01 * b1 - b0) * invDet;
                         s1 *= invDet;
-                        sqrDist = (double)0;
+                        sqrDist = 0;
                     } else {
                         // The endpoint e1 of the segment and an interior point of
                         // the line are closest.
                         s1 = segment.Extent;
                         s0 = -(a01 * s1 + b0);
-                        sqrDist = -s0 * s0 + s1 * (s1 + ((double)2) * b1) + c;
+                        sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c;
                     }
                 } else {
                     // The endpoint e0 of the segment and an interior point of the
                     // line are closest.
                     s1 = -segment.Extent;
                     s0 = -(a01 * s1 + b0);
-                    sqrDist = -s0 * s0 + s1 * (s1 + ((double)2) * b1) + c;
+                    sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c;
                 }
             } else {
                 // The line and segment are parallel.  Choose the closest pair so that
                 // one point is at segment origin.
-                s1 = (double)0;
+                s1 = 0;
                 s0 = -b0;
                 sqrDist = b0 * s0 + c;
             }
@@ -109,8 +109,8 @@ namespace g3
 		    SegmentClosest = segment.Center + s1 * segment.Direction;
 
             // Account for numerical round-off errors
-            if (sqrDist < (double)0) 
-                sqrDist = (double)0;
+            if (sqrDist < 0) 
+                sqrDist = 0;
 
             DistanceSquared = sqrDist;
 			return sqrDist;

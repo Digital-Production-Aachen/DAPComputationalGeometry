@@ -299,7 +299,7 @@ namespace g3
         public static void Store(ParametricCurveSequence2 sequence, BinaryWriter writer)
         {
             writer.Write(sequence.IsClosed);
-            writer.Write((int)sequence.Count);
+            writer.Write(sequence.Count);
             foreach (IParametricCurve2d c in sequence.Curves)
                 Store(c, writer);
         }
@@ -320,16 +320,16 @@ namespace g3
         public static void Store(IParametricCurve2d curve, BinaryWriter writer)
         {
             if (curve is Segment2d) {
-                writer.Write((int)1);
+                writer.Write(1);
                 Store((Segment2d)curve, writer);
             } else if (curve is Circle2d) {
-                writer.Write((int)2);
+                writer.Write(2);
                 Store((Circle2d)curve, writer);
             } else if (curve is Arc2d) {
-                writer.Write((int)3);
+                writer.Write(3);
                 Store((Arc2d)curve, writer);
             } else if ( curve is ParametricCurveSequence2 ) {
-                writer.Write((int)100);
+                writer.Write(100);
                 Store(curve as ParametricCurveSequence2, writer);
             }
         }

@@ -452,7 +452,7 @@ namespace g3
             Vector3d n = BaseFaceNormals[seg.base_tid];
             Vector3d c = BaseFaceCentroids[seg.base_tid];
             Vector3d e0, e1;
-            Vector3d.MakePerpVectors(ref n, out e0, out e1);
+            Vector3d.MakePerpVectors(n, out e0, out e1);
 
             DMesh3 mesh = op.Region.SubMesh;
             MeshTransforms.PerVertexTransform(mesh, (v) => {

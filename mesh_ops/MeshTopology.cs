@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using g3;
 
-namespace gs
+namespace g3
 {
     /// <summary>
     /// Extract topological information about the mesh based on identifying

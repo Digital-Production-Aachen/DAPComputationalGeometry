@@ -67,6 +67,7 @@ namespace g3
             this.rotation = m.ToQuaternion();
         }
 
+        public Frame3d ToFrame3d() => new Frame3d(Origin, rotation);
 
         public Quaternionf Rotation
         {

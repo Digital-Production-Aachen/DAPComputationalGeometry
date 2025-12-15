@@ -33,11 +33,11 @@ namespace g3
         public Vector3d Point(int i)
         {
             Util.gDevAssert(i < N);
-            double div = (double)i / PHI;
+            double div = i / PHI;
             double phi = MathUtil.TwoPI * (div - Math.Floor(div));
             double cos_phi = Math.Cos(phi), sin_phi = Math.Sin(phi);
 
-            double z = 1.0 - (2.0 * (double)i + 1.0) / (double)N;
+            double z = 1.0 - (2.0 * i + 1.0) / N;
             double theta = Math.Acos(z);
             double sin_theta = Math.Sin(theta);
 

@@ -106,7 +106,7 @@ namespace g3
 
         public double Density
         {
-            get { return (double)elements.Count / (double)bounds.Volume; }
+            get { return elements.Count / (double)bounds.Volume; }
         }
 
 

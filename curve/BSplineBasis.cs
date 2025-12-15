@@ -189,14 +189,14 @@ namespace g3
             }
 
             int i = GetKey(ref t);
-            mBD0[0,i] = (double)1;
+            mBD0[0,i] = 1;
 
             if (order >= 1) {
-                mBD1[0,i] = (double)0;
+                mBD1[0,i] = 0;
                 if (order >= 2) {
-                    mBD2[0,i] = (double)0;
+                    mBD2[0,i] = 0;
                     if (order >= 3) {
-                        mBD3[0,i] = (double)0;
+                        mBD3[0,i] = 0;
                     }
                 }
             }
@@ -222,15 +222,15 @@ namespace g3
                     mBD1[j,i - j] = (n1 * mBD1[j - 1,i - j + 1] - mBD0[j - 1,i - j + 1]) * invD1;
 
                     if (order >= 2) {
-                        mBD2[j,i] = (n0 * mBD2[j - 1,i] + ((double)2) * mBD1[j - 1,i]) * invD0;
+                        mBD2[j,i] = (n0 * mBD2[j - 1,i] + 2 * mBD1[j - 1,i]) * invD0;
                         mBD2[j,i - j] = (n1 * mBD2[j - 1,i - j + 1] -
-                            ((double)2) * mBD1[j - 1,i - j + 1]) * invD1;
+                            2 * mBD1[j - 1,i - j + 1]) * invD1;
 
                         if (order >= 3) {
                             mBD3[j,i] = (n0 * mBD3[j - 1,i] +
-                                ((double)3) * mBD2[j - 1,i]) * invD0;
+                                3 * mBD2[j - 1,i]) * invD0;
                             mBD3[j,i - j] = (n1 * mBD3[j - 1,i - j + 1] -
-                                ((double)3) * mBD2[j - 1,i - j + 1]) * invD1;
+                                3 * mBD2[j - 1,i - j + 1]) * invD1;
                         }
                     }
                 }
@@ -256,13 +256,13 @@ namespace g3
 
                         if (order >= 2) {
                             mBD2[j,k] = (n0 * mBD2[j - 1,k] +
-                                ((double)2) * mBD1[j - 1,k]) * invD0 +
-                                (n1 * mBD2[j - 1,k + 1] - ((double)2) * mBD1[j - 1,k + 1]) * invD1;
+                                2 * mBD1[j - 1,k]) * invD0 +
+                                (n1 * mBD2[j - 1,k + 1] - 2 * mBD1[j - 1,k + 1]) * invD1;
 
                             if (order >= 3) {
                                 mBD3[j,k] = (n0 * mBD3[j - 1,k] +
-                                    ((double)3) * mBD2[j - 1,k]) * invD0 +
-                                    (n1 * mBD3[j - 1,k + 1] - ((double)3) *
+                                    3 * mBD2[j - 1,k]) * invD0 +
+                                    (n1 * mBD3[j - 1,k + 1] - 3 *
                                     mBD2[j - 1,k + 1]) * invD1;
                             }
                         }
