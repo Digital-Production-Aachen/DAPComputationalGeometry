@@ -1156,6 +1156,19 @@ namespace g3
             }
         }
 
+
+        public static IEnumerable<Polygon2d> FilterByMinArea(this IEnumerable<Polygon2d> polygons, double minArea = MathUtil.ZeroTolerance)
+        {
+            foreach (var poly in polygons)
+            {
+                if (poly.Area > minArea)
+                {
+                    yield return poly;
+                }
+            }
+        }
+
+
         /// <summary>
         /// Filters the polygons by a minimum area.
         /// All polygons smaller than minArea will be discarded.
