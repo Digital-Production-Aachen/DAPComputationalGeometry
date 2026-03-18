@@ -8,14 +8,25 @@
     <Company>Digital Additive Production DAP</Company>
     <PackageProjectUrl>https://github.com/Digital-Production-Aachen/DAPComputationalGeometry</PackageProjectUrl>
     <Copyright>Copyright ©DAP 2025</Copyright>
+	<VersionPrefix>1.0.0</VersionPrefix>
+	<VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <Platforms>x64</Platforms>
     <RootNamespace>g3</RootNamespace>
+	<Description>Fork of the geometry3Sharp library for 2D/3D computing and triangle mesh processing by Ryan Schmidt. Maintained by the chair for Digital Additive Production (DAP) at RWTH Aachen University.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup>
+	<PackageLicenseExpression>BSL-1.0</PackageLicenseExpression>
+	<!--<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>-->
+	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Clipper2" Version="2.0.0" />
     <PackageReference Include="Clipper2Z" Version="2.0.0" />
     <PackageReference Include="OpenVectorFormat.OVFDefinition" Version="1.8.0" />
+	<None Include="LICENSE.txt" Pack="true" PackagePath=""/>
+	<None Include="README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
 </Project>
